@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# defining data file
+DATA=$(curl -s -L "https://drive.usercontent.google.com/u/0/uc?id=1n-2n_ZOTMleqa8qZ2nB8ALAbGFyN4-LJ&export=download")
+
 # constants
 INFO=("-i" "--info")
 INFO_ARCHAIC="Abridgement"
@@ -15,13 +18,28 @@ display_help() {
 	exit 0
 }
 
-display_help
+# display_help
 
-DATA=$(curl -sSL 'https://drive.usercontent.google.com/u/0/uc?id=1n-2n_ZOTMleqa8qZ2nB8ALAbGFyN4-LJ&export=download')
 
-MAX_VALUE=$(echo "$CSV_DATA" | awk -F, 'NR>1 {if ($3+0 > max) max=$3} END {print max}')
+SUMMARY=$(echo "$DATA" | awk -F, '
+	NR==1 {for (i=2; i<=NF; i++) header[i-1] = $i; next}
+		{
+		for (i=2; i<=NF; i++) {
+			if ($i+0 > max_col[i]+0) {
+				max_col[i-1] = $i;
+				max_row[i-1] = $1;
+			}
+		}
+	}
+	END {
+		for (i=2; i<=NF; i++)
+			if (max_col[i-1] != "") 
+				print "The highest value for " header[i-1] " is " max_col[i-1] " by pokemon " max_row[i-1];
+	}'
+)
+
 
 echo "By thy will, thou hast settled upon $INFO_ARCHAIC edict!"
 echo "Thus, thine behest shall be mine ordinance!"
-
+echo "$SUMMARY"
 
