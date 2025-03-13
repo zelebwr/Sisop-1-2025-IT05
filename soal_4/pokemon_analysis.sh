@@ -18,28 +18,38 @@ display_help() {
 	exit 0
 }
 
+archaic_message() {
+	echo "By thy will, thou hast settled upon $INFO_ARCHAIC edict!"
+	echo "Thus, thine behest shall be mine ordinance!"
+	
+}
+
 # display_help
 
+# number 1
+# SUMMARY=$(echo "$DATA" | awk -F, '
+# 	NR==1 {for (i=2; i<=NF; i++) header[i-1] = $i; next}
+# 		{
+# 		for (i=2; i<=NF; i++) {
+# 			if ($i+0 > max_col[i]+0) {
+# 				max_col[i-1] = $i;
+# 				max_row[i-1] = $1;
+# 			}
+# 		}
+# 	}
+# 	END {
+# 		for (i=2; i<=NF; i++)
+# 			if (max_col[i-1] != "") 
+# 				print "The highest value for " header[i-1] " is " max_col[i-1] " by pokemon " max_row[i-1];
+# 	}'
+# )
 
-SUMMARY=$(echo "$DATA" | awk -F, '
-	NR==1 {for (i=2; i<=NF; i++) header[i-1] = $i; next}
-		{
-		for (i=2; i<=NF; i++) {
-			if ($i+0 > max_col[i]+0) {
-				max_col[i-1] = $i;
-				max_row[i-1] = $1;
-			}
-		}
-	}
-	END {
-		for (i=2; i<=NF; i++)
-			if (max_col[i-1] != "") 
-				print "The highest value for " header[i-1] " is " max_col[i-1] " by pokemon " max_row[i-1];
-	}'
-)
 
+# echo "By thy will, thou hast settled upon $INFO_ARCHAIC edict!"
+# echo "Thus, thine behest shall be mine ordinance!"
+# echo "$SUMMARY"
 
-echo "By thy will, thou hast settled upon $INFO_ARCHAIC edict!"
-echo "Thus, thine behest shall be mine ordinance!"
-echo "$SUMMARY"
+angka=1
+echo "$DATA" | sort -t, -nrk$angka
+
 
