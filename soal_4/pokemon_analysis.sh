@@ -1,6 +1,7 @@
 #!/bin/bash
 
 easter_egg() {
+	echo -e "\n"
 	cat << EOF
 The Data's Inquisition of Revelation
 
@@ -34,6 +35,7 @@ As potent secrets, centuries old,
 Are brought to life, upon this hallowed throne,
 And in their glory, let their might be known... Pokémon!
 EOF
+	echo -e "\n"
 }
 
 # Default Values
@@ -52,30 +54,42 @@ CSV_FILE=$(curl -s -L "https://drive.usercontent.google.com/u/0/uc?id=1n-2n_ZOTM
 
 # Display help menu
 help_menu() {
+	echo "09 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 2f 0d 0a 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 5f 2c 2e 2d 2d 2d 2d 2d 2d 2e 2e 2e 2e 5f 5f 5f 2c 2e 27 20 27 2c 2e 2d 2e 0d 0a 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 2c 2d 27 20 20 20 20 20 20 20 20 20 20 5f 2c 2e 2d 2d 22 20 20 20 20 20 20 20 20 7c 0d 0a 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 2c 27 20 20 20 20 20 20 20 20 20 5f 2e 2d 27 20 20 20 20 20 20 20 20 20 20 20 20 20 20 2e 0d 0a 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 2f 20 20 20 2c 20 20 20 20 20 2c 27 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 60 0d 0a 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 2e 20 20 20 2f 20 20 20 20 20 2f 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 60 60 2e 0d 0a 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 7c 20 20 7c 20 20 20 20 20 2e 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 5c 2e 5c 0d 0a 20 20 20 20 20 20 20 5f 5f 5f 5f 20 20 20 20 20 20 7c 5f 5f 5f 2e 5f 2e 20 20 7c 20 20 20 20 20 20 20 5f 5f 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 5c 20 60 2e 0d 0a 20 20 20 20 20 2e 27 20 20 20 20 60 2d 2d 2d 22 22 20 20 20 20 20 20 20 60 60 22 2d 2e 2d 2d 22 27 60 20 20 5c 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 2e 20 20 5c 0d 0a 20 20 20 20 2e 20 20 2c 20 20 20 20 20 20 20 20 20 20 20 20 5f 5f 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 60 20 20 20 20 20 20 20 20 20 20 20 20 20 20 7c 20 20 20 2e 0d 0a 20 20 20 20 60 2c 27 20 20 20 20 20 20 20 20 20 2c 2d 22 27 20 20 2e 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 5c 20 20 20 20 20 20 20 20 20 20 20 20 20 7c 20 20 20 20 4c 0d 0a 20 20 20 2c 27 20 20 20 20 20 20 20 20 20 20 27 20 20 20 20 5f 2e 27 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 2d 2e 5f 20 20 20 20 20 20 20 20 20 20 2f 20 20 20 20 7c 0d 0a 20 20 2c 60 2d 2e 20 20 20 20 2c 22 2e 20 20 20 60 2d 2d 27 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 3e 2e 20 20 20 20 20 20 2c 27 20 20 20 20 20 7c 0d 0a 20 2e 20 2e 27 5c 27 20 20 20 60 2d 27 20 20 20 20 20 20 20 5f 5f 20 20 20 20 2c 20 20 2c 2d 2e 20 20 20 20 20 20 20 20 20 2f 20 20 60 2e 5f 5f 2e 2d 20 20 20 20 20 20 2c 27 0d 0a 20 7c 7c 3a 2c 20 2e 20 20 20 20 20 20 20 20 20 20 20 2c 27 20 20 3b 20 20 2f 20 20 2f 20 5c 20 60 20 20 20 20 20 20 20 20 60 2e 20 20 20 20 2e 20 20 20 20 20 20 2e 27 2f 0d 0a 20 6a 7c 3a 44 20 20 5c 20 20 20 20 20 20 20 20 20 20 60 2d 2d 27 20 20 27 20 2c 27 5f 20 20 2e 20 2e 20 20 20 20 20 20 20 20 20 60 2e 5f 5f 2c 20 5c 20 20 20 2c 20 2f 0d 0a 2f 20 4c 3a 5f 20 20 7c 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 2e 20 20 22 27 20 3a 5f 3b 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 60 2e 27 2e 27 0d 0a 2e 20 20 20 20 22 22 27 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 22 22 22 22 22 27 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 56 0d 0a 20 60 2e 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 2e 20 20 20 20 60 2e 20 20 20 5f 2c 2e 2e 20 20 60 0d 0a 20 20 20 60 2c 5f 20 20 20 2e 20 20 20 20 2e 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 5f 2c 2d 27 2f 20 20 20 20 2e 2e 20 60 2c 27 20 20 20 5f 5f 20 20 60 0d 0a 20 20 20 20 29 20 5c 60 2e 5f 20 20 20 20 20 20 20 20 5f 5f 5f 2e 2e 2e 2e 2d 2d 2d 2d 22 27 20 20 2c 27 20 20 20 2e 27 20 20 5c 20 7c 20 20 20 27 20 20 5c 20 20 2e 0d 0a 20 20 20 2f 20 20 20 60 2e 20 22 60 2d 2e 2d 2d 22 27 20 20 20 20 20 20 20 20 20 5f 2c 27 20 2c 27 20 20 20 20 20 60 2d 2d 2d 27 20 7c 20 20 20 20 60 2e 2f 20 20 7c 0d 0a 20 20 2e 20 20 20 5f 20 20 60 22 22 27 2d 2d 2e 2e 5f 5f 5f 5f 5f 2e 2e 2d 2d 22 20 20 20 2c 20 20 20 20 20 20 20 20 20 20 20 20 20 27 20 20 20 20 20 20 20 20 20 7c 0d 0a 20 20 7c 20 2e 22 20 60 2e 20 60 2d 2e 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 2f 2d 2e 20 20 20 20 20 20 20 20 20 20 20 2f 20 20 20 20 20 20 20 20 20 20 2c 0d 0a 20 20 7c 20 60 2e 5f 2e 27 20 20 20 20 60 2c 5f 20 20 20 20 20 20 20 20 20 20 20 20 3b 20 20 2f 20 20 20 20 20 20 20 20 20 2c 27 20 20 20 20 20 20 20 20 20 20 2e 0d 0a 20 2e 27 20 20 20 20 20 20 20 20 20 20 2f 7c 20 60 2d 2e 20 20 20 20 20 20 20 20 2e 20 2c 27 20 20 20 20 20 20 20 20 20 2c 20 20 20 20 20 20 20 20 20 20 20 2c 0d 0a 20 27 2d 2e 5f 5f 20 5f 5f 20 5f 2c 27 2c 27 20 20 20 20 27 60 2d 2e 2e 5f 5f 5f 3b 2d 2e 2e 2e 5f 5f 20 20 20 2c 2e 27 5c 20 5f 5f 5f 5f 2e 5f 5f 5f 2e 27 0d 0a 20 60 22 5e 2d 2d 27 2e 2e 27 20 20 20 27 2d 60 2d 5e 2d 27 22 2d 2d 20 20 20 20 60 2d 5e 2d 27 60 2e 27 27 22 22 22 22 22 60 2e 2c 5e 2e 60 2e 2d 2d 27" | xxd -r -p
+
     cat << EOF
-Usage: $0 [OPTION] ... [FILE]
+Usage: $0 [OPTION] ...
 
 Options:
-  -h, --help              Show this help menu for commands.
+  Help: $0 --help
+    -h, --help              Show this help menu for commands.
 
-  -d, --direct [URL]||[DIR]
-                          Read a CSV File from the given URL. 
-                          By default uses the pokemon dataset.
-
-  -i, --info              Display a summary of information about the dataset.
-
-  -s, --sort              Sort the dataset.
-      -c, --column [NUM]  Sort by the specified column number.
-      -R, --reverse       Sort in reverse order.
-
-  -f, --find [STR]        Search for values in a specific column.
-                          By default, searches every column and outputs all 
-                          of the matching pattern.
-      -c, --column [NUM]  Choose the column to search.
-      -A, --amount [NUM]  Limit the number of results.
-      -o, --output        Specify output format:
-          -r, --row       Output entire row containing the match.
-          -f, --focused   Output only the exact match.
+  Direct: $0 --direct [URL] || [DIR]
+          e.g. $0 -d https://example.com/file.csv -s -c 2 -R
+          e.g. $0 -d /home/user/file.csv -f Pikachu -c 2 -A 10 -o -r
+    -d, --direct [URL] || [DIR]
+                            Read a CSV File from the given URL. 
+                            By default uses the pokemon dataset.
+  Info: $0 --info
+    -i, --info              Display a summary of information about the dataset.
+  
+  Sort: $0 --sort -c [NUM] -R
+        e.g. $0 -s -c 2 -R
+    -s, --sort              Sort the dataset.
+        -c, --column [NUM]  Sort by the specified column number.
+        -R, --reverse       Sort in reverse order.
+  
+  Find: $0 --find [STR] -c [NUM] -A [NUM] -o [TYPE]
+        e.g. $0 -f Pikachu -c 2 -A 10 -o -r
+    -f, --find [STR]        Search for values in a specific column.
+                            By default, searches every column and outputs all 
+                            of the matching pattern.
+        -c, --column [NUM]  Choose the column to search.
+        -A, --amount [NUM]  Limit the number of results.
+        -o, --output        Specify output format:
+            -r, --row       Output entire row containing the match.
+            -f, --focused   Output only the exact match.
+    -e, --easter-egg        Display an easter egg message.
+                            Please try me :(
 EOF
 }
 
@@ -103,8 +117,38 @@ SUMMARY=$(echo "$CSV_FILE" | awk -F, '
 	}'
 )
 
+error_general(){
+	echo "Try using -h or --help for help menu"
+}
+
+erorr_direct(){
+	echo "Try inserting a proper URL/DIRECTORY [URL] [DIR]"
+	echo "e.g. -d https://example.com/file.csv"
+	echo "e.g. -d /home/user/file.csv"
+}
+
+error_find(){
+	echo "Try inserting a proper string [STR]"
+	echo "e.g. -f Pikachu"
+}
+
+error_column(){
+	echo "Try inserting a proper number [NUM]"
+	echo "e.g. -c 2"
+}
+
+error_amount(){
+	echo "Try inserting a proper number [NUM]"
+	echo "e.g. -A 10"
+}
+
+error_output(){
+	echo "Try using -r or --row for output type"
+	echo "Try using -f or --focused for output type"
+}
+
 # checking for arguments
-while [$# -gt 0] do
+while [ $# -gt 0 ] do
 	case $1 in
 		-h|--help)
 			help_menu
@@ -162,6 +206,20 @@ while [$# -gt 0] do
 								if [ $8 == "-r" ] || [ $8 == "--row" ] ||  [ $8 == "-f" ] || [ $8 == "--focused" ]; then
 									OUTPUT_TYPE=$8
 									shift 8
+else
+									echo "Invalid argument: $8"
+									exit 1
+								fi
+							else
+								shift 6
+							fi
+							;;
+						-o|--output)
+							if [ $6 == "-r" ] || [ $6 == "--row" ] ||  [ $6 == "-f" ] || [ $6 == "--focused" ]; then
+								OUTPUT_TYPE=$6
+								if [ $7 == "-A" ] || [ $7 == "--amount" ]; then
+									FIND_AMOUNT=$8
+									shift 8
 								else
 									echo "Invalid argument: $8"
 									exit 1
@@ -177,11 +235,17 @@ while [$# -gt 0] do
 									FIND_AMOUNT=$8
 									shift 8
 								else
-									shift 6
 								fi
 							else
 								echo "Invalid argument: $6"
 								exit 1
+	shift 6
+								fi
+							else
+								echo "Invalid argument: $6"
+								exit 1
+							fi
+							;;
 						*)
 							shift 4
 							;;
@@ -252,10 +316,16 @@ while [$# -gt 0] do
 					else
 						echo "Invalid argument: $4"
 						exit 1
+					fi
+					;;
 				*)
 					shift 2
 					;;
 			esac
+			;;
+		-e|--easter-egg)
+			easter_egg
+			shift
 			;;
 		*)
 			echo "Invalid argument: $1"
