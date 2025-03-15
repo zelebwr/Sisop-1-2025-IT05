@@ -430,8 +430,10 @@ fi
 CSV_HEADER=$(echo "$CSV_FILE" | head -n 1)
 CSV_TAIL=$(echo "$CSV_FILE" | tail -n +2)
 
+# output archaic message
+archaic_message
+
 if [ $INFO_CHECK -eq 1 ]; then
-	archaic_message
 	echo "$CSV_FILE" | awk -F, '
 		NR==1 {for (i=2; i<=NF; i++) header[i-1] = $i; next}
 			{
@@ -470,8 +472,6 @@ if [ $FIND_CHECK -eq 1 ]; then
 					print $0;
 				}
 			')
-			archaic_message
-			echo "$CSV_HEADER"
 			echo "$CSV_TAIL"
 		elif [ $OUTPUT_TYPE == "-f" ] || [ $OUTPUT_TYPE == "--focused" ]; then
 			CSV_TAIL=$(echo "$CSV_TAIL" | awk -F, -v col="$FIND_COLUMN" -v val="$FIND_VALUE" '
@@ -479,22 +479,17 @@ if [ $FIND_CHECK -eq 1 ]; then
 					print $0;
 				}
 			')
-			archaic_message
-			echo "$CSV_HEADER"
 			echo "$CSV_TAIL" | grep -o "$FIND_VALUE" 
-			echo "The amount of occurrences of the focused value is: "
+			echo -n "The amount of occurrences of the focused value is1: "
 			echo "$CSV_TAIL" | grep -o "$FIND_VALUE" | wc -l
 		fi
-	fi
-	if [ $OUTPUT_TYPE == "-r" ] || [ $OUTPUT_TYPE == "--row" ]; then
+	elif [ $OUTPUT_TYPE == "-r" ] || [ $OUTPUT_TYPE == "--row" ]; then
 		CSV_TAIL=$(echo "$CSV_TAIL" | awk -F, -v col="$FIND_COLUMN" -v val="$FIND_VALUE" -v amt="$FIND_AMOUNT" '
             amt > 0 && $col ~ val {
                 print $0;
                 amt--;
             }
         ')
-		archaic_message
-		echo "$CSV_HEADER"
 		echo "$CSV_TAIL"
 	elif [ $OUTPUT_TYPE == "-f" ] || [ $OUTPUT_TYPE == "--focused" ]; then
 		CSV_TAIL=$(echo "$CSV_TAIL" | awk -F, -v col="$FIND_COLUMN" -v val="$FIND_VALUE" -v amt="$FIND_AMOUNT" '
@@ -503,17 +498,14 @@ if [ $FIND_CHECK -eq 1 ]; then
                 amt--;
             }
         ')
-		archaic_message
-		echo "$CSV_HEADER"
 		echo "$CSV_TAIL" | grep -o "$FIND_VALUE" 
-		echo "The amount of occurrences of the focused value is: "
+		echo -n "The amount of occurrences of the focused value is2: "
 		echo "$CSV_TAIL" | grep -o "$FIND_VALUE" | wc -l
 	fi
 fi
 
 # output the sorted dataset
 if [ $SORT_OUTPUT -eq 1 ]; then
-	archaic_message
 	echo "$CSV_HEADER"
 	echo "$CSV_TAIL"
 fi
