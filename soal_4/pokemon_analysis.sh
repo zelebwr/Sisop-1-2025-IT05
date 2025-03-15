@@ -40,6 +40,7 @@ EOF
 
 # Default Values
 COMMAND=""
+INFO_CHECK=0 # 0 for not summary, 1 for summary
 SORT_CHECK=0 # 0 for not sorted, 1 for sorted
 SORT_OUTPUT=0 # 0 for not outputted, 1 for outputted
 SORT_ORDER=0 # 0 for ascending, 1 for descending
@@ -84,11 +85,11 @@ Options:
   Find: $0 --find [STR] -c [NUM] -A [NUM] -o [TYPE]
         e.g. $0 -f Pikachu -c 2 -A 10 -o -r
     -f, --find [STR]        Search for values in a specific column.
-                            By default, searches every column and outputs all 
+                            By default, searches every column and outputs only 10 results. 
                             of the matching pattern.
         -c, --column [NUM]  Choose the column to search.
         -A, --amount [NUM]  Limit the number of results.
-            -e, --every     Output every match.
+            -E, --every     Output every match.
         -o, --output        Specify output format:
             -r, --row       Output entire row containing the match.
             -f, --focused   Output only the exact match.
@@ -102,24 +103,6 @@ archaic_message() {
 	echo -e "By thy will, thou hast settled upon $COMMAND \bedict!"
 	echo -e "Thus, thine behest shall be mine ordinance!\n"
 }
-
-# summary of the dataset
-SUMMARY=$(echo "$CSV_FILE" | awk -F, '
-	NR==1 {for (i=2; i<=NF; i++) header[i-1] = $i; next}
-		{
-		for (i=2; i<=NF; i++) {
-			if ($i+0 > max_col[i]+0) {
-				max_col[i-1] = $i;
-				max_row[i-1] = $1;
-			}
-		}
-	}
-	END {
-		for (i=2; i<=NF; i++)
-			if (max_col[i-1] != "") 
-				print "The highest value for " header[i-1] " is " max_col[i-1] " by " max_row[i-1];
-	}'
-)
 
 error_general(){
 	echo "Try using -h or --help for help menu"
@@ -214,9 +197,8 @@ while [ $# -gt 0 ]; do
 			;;
 		-i|--info)
 			COMMAND+="Erudition "
-			archaic_message
-			echo "$SUMMARY"
-			exit 0
+			INFO_CHECK=1
+			break
 			;;
 		-s|--sort)
 			COMMAND+="Dispoition "
@@ -433,8 +415,30 @@ while [ $# -gt 0 ]; do
 done
 
 # read the dataset 
-if [ $CSV_DIR -ne 0 ]; then
+if [ $CSV_DIR -eq 0 ]; then
 	CSV_FILE=$(curl -s -L "$CSV_LINK")
+fi
+
+CSV_HEADER=$(echo "$CSV_FILE" | head -n 1)
+CSV_TAIL=$(echo "$CSV_FILE" | tail -n +2)
+
+if [ $INFO_CHECK -eq 1 ]; then
+	archaic_message
+	echo "$CSV_FILE" | awk -F, '
+		NR==1 {for (i=2; i<=NF; i++) header[i-1] = $i; next}
+			{
+			for (i=2; i<=NF; i++) {
+				if ($i+0 > max_col[i]+0) {
+					max_col[i-1] = $i;
+					max_row[i-1] = $1;
+				}
+			}
+		}
+		END {
+			for (i=2; i<=NF; i++)
+				if (max_col[i-1] != "") 
+					print "The highest value for " header[i-1] " is " max_col[i-1] " by " max_row[i-1];
+		}'
 fi
 
 # sort the dataset
@@ -451,54 +455,59 @@ if [ $FIND_CHECK -eq 1 ]; then
 	if [ $SORT_OUTPUT -eq 1 ]; then
 		SORT_OUTPUT=0 # disable sort output
 	fi
-	if [ $FIND_AMOUNT == "-e" ] || [ $FIND_AMOUNT == "--every" ]; then
+	if [ $FIND_AMOUNT == "-E" ] || [ $FIND_AMOUNT == "--every" ]; then
 		if [ $OUTPUT_TYPE == "-r" ] || [ $OUTPUT_TYPE == "--row" ]; then
-			CSV_FILE=$(echo "$CSV_FILE" | awk -F, -v col=$FIND_COLUMN -v val=$FIND_VALUE -'{
+			CSV_TAIL=$(echo "$CSV_FILE" | awk -F, -v col=$FIND_COLUMN -v val=$FIND_VALUE -'{
 				while ($col ~ val) {
 					print $0;
 				}
 			}')
 			archaic_message
-			echo "$CSV_FILE"
+			echo "$CSV_HEADER"
+			echo "$CSV_TAIL"
 		elif [ $OUTPUT_TYPE == "-f" ] || [ $OUTPUT_TYPE == "--focused" ]; then
-			CSV_FILE=$(echo "$CSV_FILE" | awk -F, -v col=$FIND_COLUMN -v val=$FIND_VALUE -v amt=$FIND_AMOUNT -'{
+			CSV_TAIL=$(echo "$CSV_TAIL" | awk -F, -v col=$FIND_COLUMN -v val=$FIND_VALUE -v amt=$FIND_AMOUNT -'{
 				while ($col ~ val) {
 					print $0;
 				}
 			}')
 			archaic_message
-			echo "$CSV_FILE" | grep -o "$FIND_VALUE" 
+			echo "$CSV_HEADER"
+			echo "$CSV_TAIL" | grep -o "$FIND_VALUE" 
 			echo "The amount of occurrences of the focused value is: "
-			echo "$CSV_FILE" | grep -o "$FIND_VALUE" | wc -l
+			echo "$CSV_TAIL" | grep -o "$FIND_VALUE" | wc -l
 		fi
-
+	fi
 	if [ $OUTPUT_TYPE == "-r" ] || [ $OUTPUT_TYPE == "--row" ]; then
-		CSV_FILE=$(echo "$CSV_FILE" | awk -F, -v col=$FIND_COLUMN -v val=$FIND_VALUE -v amt=$FIND_AMOUNT -'{
+		CSV_TAIL=$(echo "$CSV_TAIL" | awk -F, -v col=$FIND_COLUMN -v val=$FIND_VALUE -v amt=$FIND_AMOUNT -'{
 			while (amt > 0 && $col ~ val) {
 				print $0;
 				amt--;
 			}
 		}')
 		archaic_message
-		echo "$CSV_FILE"
+		echo "$CSV_HEADER"
+		echo "$CSV_TAIL"
 	elif [ $OUTPUT_TYPE == "-f" ] || [ $OUTPUT_TYPE == "--focused" ]; then
-		CSV_FILE=$(echo "$CSV_FILE" | awk -F, -v col=$FIND_COLUMN -v val=$FIND_VALUE -v amt=$FIND_AMOUNT -'{
+		CSV_TAIL=$(echo "$CSV_TAIL" | awk -F, -v col=$FIND_COLUMN -v val=$FIND_VALUE -v amt=$FIND_AMOUNT -'{
 			while (amt > 0 && $col ~ val) {
 				print $0;
 				amt--;
 			}
 		}')
 		archaic_message
-		echo "$CSV_FILE" | grep -o "$FIND_VALUE" 
+		echo "$CSV_HEADER"
+		echo "$CSV_TAIL" | grep -o "$FIND_VALUE" 
 		echo "The amount of occurrences of the focused value is: "
-		echo "$CSV_FILE" | grep -o "$FIND_VALUE" | wc -l
+		echo "$CSV_TAIL" | grep -o "$FIND_VALUE" | wc -l
 	fi
 fi
 
 # output the sorted dataset
 if [ $SORT_OUTPUT -eq 1 ]; then
 	archaic_message
-	echo "$CSV_FILE"
+	echo "$CSV_HEADER"
+	echo "$CSV_TAIL"
 fi
 
 # don bang
