@@ -261,7 +261,7 @@ while [ $# -gt 0 ]; do
 					FIND_COLUMN=$4
 					case $5 in
 						-A|--amount)
-							if ! is_integer "$6" || [ "$6" -le 0 ]; then
+							if ! is_integer "$4" || [ "$4" -le 0 ] || [ "$4" == "-E" ] || [ "$4" == "--every" ]; then
 								error_amount
 								exit 1
 							fi
@@ -283,7 +283,7 @@ while [ $# -gt 0 ]; do
 							if [ $6 == "-r" ] || [ $6 == "--row" ] ||  [ $6 == "-f" ] || [ $6 == "--focused" ]; then
 								OUTPUT_TYPE=$6
 								if [ $7 == "-A" ] || [ $7 == "--amount" ]; then
-									if ! is_integer "$8" || [ "$8" -le 0 ]; then
+									if ! is_integer "$4" || [ "$4" -le 0 ] || [ "$4" == "-E" ] || [ "$4" == "--every" ]; then
 										error_amount
 										exit 1
 									fi
@@ -304,7 +304,7 @@ while [ $# -gt 0 ]; do
 					esac
 					;;
 				-A|--amount)
-					if ! is_integer "$4" || [ "$4" -le 0 ]; then
+					if ! is_integer "$4" || [ "$4" -le 0 ] || [ "$4" == "-E" ] || [ "$4" == "--every" ]; then
 						error_amount
 						exit 1
 					fi
@@ -364,7 +364,7 @@ while [ $# -gt 0 ]; do
 								fi
 								FIND_COLUMN=$6
 								if [ $7 == "-A" ] || [ $7 == "--amount" ]; then
-									if ! is_integer "$8" || [ "$8" -le 0 ]; then
+									if ! is_integer "$4" || [ "$4" -le 0 ] || [ "$4" == "-E" ] || [ "$4" == "--every" ]; then
 										error_amount
 										exit 1
 									fi
@@ -375,7 +375,7 @@ while [ $# -gt 0 ]; do
 								fi
 								;;
 							-A|--amount)
-								if ! is_integer "$6" || [ "$6" -le 0 ]; then
+								if ! is_integer "$4" || [ "$4" -le 0 ] || [ "$4" == "-E" ] || [ "$4" == "--every" ]; then
 									error_amount
 									exit 1
 								fi
