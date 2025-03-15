@@ -108,7 +108,7 @@ error_general(){
 	echo "Try using -h or --help for help menu"
 }
 
-erorr_direct(){
+error_direct(){
 	echo "Try inserting a proper [URL]/[DIRECTORY]"
 	echo "e.g. -d https://example.com/file.csv"
 	echo "e.g. -d /home/user/file.csv"
@@ -143,6 +143,15 @@ csv_dir_check(){
 	fi
 }
 
+valid_url() {
+    local url="$1"
+    if curl --output /dev/null --silent --head --fail "$url"; then
+        return 0  # URL is valid
+    else
+        return 1  # URL is not valid
+    fi
+}
+
 csv_link_check(){
 	local temp="$1"
 	if echo "$temp" | head -n 5 | grep -q ','; then
@@ -175,14 +184,13 @@ while [ $# -gt 0 ]; do
 			if [ -e "$2" ]; then
 				if csv_dir_check "$2"; then
 					CSV_FILE=$(cat "$2")
+					shift 2
 				else
 					error_csv
 					exit 1
 				fi
 			else 
-				curl --silent --show-error --fail "$2"
-				status=$?
-				if [ status -eq 0 ]; then
+				if valid_url "$2"; then # still can't be used
 					if csv_link_check "$2"; then
 						CSV_LINK="$2"
 					else 
