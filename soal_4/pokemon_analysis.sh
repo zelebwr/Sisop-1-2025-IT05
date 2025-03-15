@@ -50,7 +50,8 @@ FIND_CHECK=0 # 0 for not find, 1 for find
 FIND_VALUE=""
 OUTPUT_TYPE="-r" # -r for row, -c for column, -f for focused
 EVERY_MATCH=0
-CSV_FILE=$(curl -s -L "https://drive.usercontent.google.com/u/0/uc?id=1n-2n_ZOTMleqa8qZ2nB8ALAbGFyN4-LJ&export=download")
+CSV_LINK="https://drive.usercontent.google.com/u/0/uc?id=1n-2n_ZOTMleqa8qZ2nB8ALAbGFyN4-LJ&export=download"
+CSV_DIR=0 # 0 for not directory, 1 for directory
 
 # Display help menu
 help_menu() {
@@ -122,7 +123,7 @@ error_general(){
 }
 
 erorr_direct(){
-	echo "Try inserting a proper URL/DIRECTORY [URL] [DIR]"
+	echo "Try inserting a proper [URL]/[DIRECTORY]"
 	echo "e.g. -d https://example.com/file.csv"
 	echo "e.g. -d /home/user/file.csv"
 }
@@ -147,6 +148,36 @@ error_output(){
 	echo "Try using -f or --focused for output type"
 }
 
+csv_dir_check(){
+	local temp="$1"
+	if [[ "$temp" == *.csv ]]; then
+		return 0
+	else
+		return 1
+	fi
+}
+
+csv_link_check(){
+	local temp="$1"
+	if echo "$temp" | head -n 5 | grep -q ','; then
+		return 0
+	else
+		return 1
+	fi
+}
+
+error_csv(){
+	echo "File is not a CSV file"
+	echo "Try inserting a proper CSV file"
+	echo "e.g. -d https://example.com/file.csv"
+	echo "e.g. -d /home/user/file.csv"
+}
+
+is_integer() {
+    local s="$1"
+    [[ "$s" =~ ^[0-9]+$ ]]
+}
+
 # checking for arguments
 while [ $# -gt 0 ] do
 	case $1 in
@@ -155,8 +186,28 @@ while [ $# -gt 0 ] do
 			exit 0
 			;;
 		-d|--direct)
-			CSV_FILE=$(curl -s -L $2)
-			shift 2
+			if [ -e "$2" ]; then
+				if csv_dir_check "$2"; then
+					CSV_FILE=$(cat "$2")
+				else
+					error_csv
+					exit 1
+				fi
+			else 
+				curl --silent --show-error --fail "$2"
+				status=$?
+				if [ status -eq 0 ]; then
+					if csv_link_check "$2"; then
+						CSV_LINK="$2"
+					else 
+						error_csv
+						exit 1
+					fi
+				else 
+					error_direct
+					exit 1
+				fi
+			fi
 			;;
 		-i|--info)
 			COMMAND+="Erudition "
@@ -170,6 +221,10 @@ while [ $# -gt 0 ] do
 			SORT_OUTPUT=1
 			case $2 in
 				-c|--column)
+					if ! is_integer "$3" || [ "$3" -eq 0 ]; then
+						error_column
+						exit 1
+					fi
 					SORT_COLUMN=$3
 					if [ $4 == "-R" ] || [ $4 == "--reverse" ]; then
 						SORT_ORDER=1 # descending
@@ -181,6 +236,10 @@ while [ $# -gt 0 ] do
 				-R|--reverse)
 					SORT_ORDER=1
 					if [ $3 == "-c" ] || [ $3 == "--column" ]; then
+						if ! is_integer "$4" || [ "$4" -eq 0 ]; then
+							error_column
+							exit 1
+						fi
 						SORT_COLUMN=$4
 						shift 4
 					else 
@@ -193,21 +252,34 @@ while [ $# -gt 0 ] do
 			esac
 			;;
 		-f|--find)
+			if [ -z "$2" ]; then
+				error_find
+				exit 1
+			fi
 			FIND_CHECK=1
 			FIND_VALUE=$2
 			COMMAND+="Inquisition "
 			case $3 in
 				-c|--column)
+					if ! is_integer "$4" || [ "$4" -eq 0 ]; then
+						error_column
+						exit 1
+					fi
 					FIND_COLUMN=$4
 					case $5 in
 						-A|--amount)
+							if ! is_integer "$6" || [ "$6" -eq 0 ]; then
+								error_amount
+								exit 1
+							fi
 							FIND_AMOUNT=$6
 							if [ $7 == "-o" ] || [ $7 == "--output" ]; then
 								if [ $8 == "-r" ] || [ $8 == "--row" ] ||  [ $8 == "-f" ] || [ $8 == "--focused" ]; then
 									OUTPUT_TYPE=$8
 									shift 8
-else
+								else
 									echo "Invalid argument: $8"
+									error_output
 									exit 1
 								fi
 							else
@@ -218,31 +290,18 @@ else
 							if [ $6 == "-r" ] || [ $6 == "--row" ] ||  [ $6 == "-f" ] || [ $6 == "--focused" ]; then
 								OUTPUT_TYPE=$6
 								if [ $7 == "-A" ] || [ $7 == "--amount" ]; then
+									if ! is_integer "$8" || [ "$8" -eq 0 ]; then
+										error_amount
+										exit 1
+									fi
 									FIND_AMOUNT=$8
 									shift 8
 								else
-									echo "Invalid argument: $8"
-									exit 1
-								fi
-							else
-								shift 6
-							fi
-							;;
-						-o|--output)
-							if [ $6 == "-r" ] || [ $6 == "--row" ] ||  [ $6 == "-f" ] || [ $6 == "--focused" ]; then
-								OUTPUT_TYPE=$6
-								if [ $7 == "-A" ] || [ $7 == "--amount" ]; then
-									FIND_AMOUNT=$8
-									shift 8
-								else
+									shift 6
 								fi
 							else
 								echo "Invalid argument: $6"
-								exit 1
-	shift 6
-								fi
-							else
-								echo "Invalid argument: $6"
+								error_output
 								exit 1
 							fi
 							;;
@@ -252,12 +311,20 @@ else
 					esac
 					;;
 				-A|--amount)
+					if ! is_integer "$4" || [ "$4" -eq 0 ]; then
+						error_amount
+						exit 1
+					fi
 					FIND_AMOUNT=$4
 					case $5 in
 						-o|--output)
 							if [ $6 == "-r" ] || [ $6 == "--row" ] ||  [ $6 == "-f" ] || [ $6 == "--focused" ]; then
 								OUTPUT_TYPE=$6
 								if [ $7 == "-c" ] || [ $7 == "--column" ]; then
+									if ! is_integer "$8" || [ "$8" -eq 0 ]; then
+										error_column
+										exit 1
+									fi
 									FIND_COLUMN=$8
 									shift 8
 								else
@@ -265,10 +332,15 @@ else
 								fi
 							else
 								echo "Invalid argument: $6"
+								error_output
 								exit 1
 							fi
 							;;
 						-c|--column)
+							if ! is_integer "$6" || [ "$6" -eq 0 ]; then
+								error_column
+								exit 1
+							fi
 							FIND_COLUMN=$6
 							if [ $7 == "-o" ] || [ $7 == "--output" ]; then
 								if [ $8 == "-r" ] || [ $8 == "--row" ] ||  [ $8 == "-f" ] || [ $8 == "--focused" ]; then
@@ -276,6 +348,7 @@ else
 									shift 8
 								else
 									echo "Invalid argument: $8"
+									error_output
 									exit 1
 								fi
 							else
@@ -292,8 +365,16 @@ else
 						OUTPUT_TYPE=$4
 						case $5 in
 							-c|--column)
+								if ! is_integer "$6" || [ "$6" -eq 0 ]; then
+									error_column
+									exit 1
+								fi
 								FIND_COLUMN=$6
 								if [ $7 == "-A" ] || [ $7 == "--amount" ]; then
+									if ! is_integer "$8" || [ "$8" -eq 0 ]; then
+										error_amount
+										exit 1
+									fi
 									FIND_AMOUNT=$8
 									shift 8
 								else
@@ -301,8 +382,16 @@ else
 								fi
 								;;
 							-A|--amount)
+								if ! is_integer "$6" || [ "$6" -eq 0 ]; then
+									error_amount
+									exit 1
+								fi
 								FIND_AMOUNT=$6
 								if [ $7 == "-c" ] || [ $7 == "--column" ]; then
+									if ! is_integer "$8" || [ "$8" -eq 0 ]; then
+										error_column
+										exit 1
+									fi
 									FIND_COLUMN=$8
 									shift 8
 								else
@@ -315,6 +404,7 @@ else
 						esac
 					else
 						echo "Invalid argument: $4"
+						error_output
 						exit 1
 					fi
 					;;
@@ -324,15 +414,25 @@ else
 			esac
 			;;
 		-e|--easter-egg)
-			easter_egg
+			easter_egg # please try me :(
 			shift
 			;;
 		*)
 			echo "Invalid argument: $1"
+			echo "Pray, what manner of contraption is this?"
+			echo "I must confess, I find myself somewhat perplexed."
+			echo "Could it be that your vision is, perchance, somewhat obscured?"
+			echo "For, if I recall correctly, I did impart a most clear and unambiguous instruction."
+			echo "Surely, it was not so easily forgotten?"
 			exit 1
 			;;
 	esac
 done
+
+# read the dataset 
+if [ $CSV_DIR -ne 0 ]; then
+	CSV_FILE=$(curl -s -L "$CSV_LINK")
+fi
 
 # sort the dataset
 if [ $SORT_CHECK -eq 1 ]; then
@@ -374,3 +474,5 @@ if [ $SORT_OUTPUT -eq 1 ]; then
 	archaic_message
 	echo "$CSV_FILE"
 fi
+
+# don bang
