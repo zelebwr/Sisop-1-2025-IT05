@@ -465,20 +465,20 @@ if [ $FIND_CHECK -eq 1 ]; then
 	fi
 	if [ $FIND_AMOUNT == "-E" ] || [ $FIND_AMOUNT == "--every" ]; then
 		if [ $OUTPUT_TYPE == "-r" ] || [ $OUTPUT_TYPE == "--row" ]; then
-			CSV_TAIL=$(echo "$CSV_FILE" | awk -F, -v col=$FIND_COLUMN -v val=$FIND_VALUE -'{
-				while ($col ~ val) {
+			CSV_TAIL=$(echo "$CSV_FILE" | awk -F, -v col="$FIND_COLUMN" -v val="$FIND_VALUE" '
+				$col ~ val {
 					print $0;
 				}
-			}')
+			')
 			archaic_message
 			echo "$CSV_HEADER"
 			echo "$CSV_TAIL"
 		elif [ $OUTPUT_TYPE == "-f" ] || [ $OUTPUT_TYPE == "--focused" ]; then
-			CSV_TAIL=$(echo "$CSV_TAIL" | awk -F, -v col=$FIND_COLUMN -v val=$FIND_VALUE -v amt=$FIND_AMOUNT -'{
-				while ($col ~ val) {
+			CSV_TAIL=$(echo "$CSV_TAIL" | awk -F, -v col="$FIND_COLUMN" -v val="$FIND_VALUE" '
+				$col ~ val {
 					print $0;
 				}
-			}')
+			')
 			archaic_message
 			echo "$CSV_HEADER"
 			echo "$CSV_TAIL" | grep -o "$FIND_VALUE" 
@@ -487,22 +487,22 @@ if [ $FIND_CHECK -eq 1 ]; then
 		fi
 	fi
 	if [ $OUTPUT_TYPE == "-r" ] || [ $OUTPUT_TYPE == "--row" ]; then
-		CSV_TAIL=$(echo "$CSV_TAIL" | awk -F, -v col=$FIND_COLUMN -v val=$FIND_VALUE -v amt=$FIND_AMOUNT -'{
-			while (amt > 0 && $col ~ val) {
-				print $0;
-				amt--;
-			}
-		}')
+		CSV_TAIL=$(echo "$CSV_TAIL" | awk -F, -v col="$FIND_COLUMN" -v val="$FIND_VALUE" -v amt="$FIND_AMOUNT" '
+            amt > 0 && $col ~ val {
+                print $0;
+                amt--;
+            }
+        ')
 		archaic_message
 		echo "$CSV_HEADER"
 		echo "$CSV_TAIL"
 	elif [ $OUTPUT_TYPE == "-f" ] || [ $OUTPUT_TYPE == "--focused" ]; then
-		CSV_TAIL=$(echo "$CSV_TAIL" | awk -F, -v col=$FIND_COLUMN -v val=$FIND_VALUE -v amt=$FIND_AMOUNT -'{
-			while (amt > 0 && $col ~ val) {
-				print $0;
-				amt--;
-			}
-		}')
+		CSV_TAIL=$(echo "$CSV_TAIL" | awk -F, -v col="$FIND_COLUMN" -v val="$FIND_VALUE" -v amt="$FIND_AMOUNT" '
+            amt > 0 && $col ~ val {
+                print $0;
+                amt--;
+            }
+        ')
 		archaic_message
 		echo "$CSV_HEADER"
 		echo "$CSV_TAIL" | grep -o "$FIND_VALUE" 
