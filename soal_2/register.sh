@@ -83,7 +83,20 @@ while true; do
     if [ -z "$PASSWORD" ]; then
         echo -e "\nPassword cannot be empty"
         echo -e "Please enter a valid password.\n"
-    else
+    elif
+        if [ ${#PASSWORD} -lt 8 ]; then
+            echo -e "\nPassword must be at least 8 characters long."
+            echo -e "Please enter a valid password.\n"
+        elif ! [[ "$PASSWORD" =~ [A-Z] ]]; then
+            echo -e "\nPassword must contain at least one uppercase letter."
+            echo -e "Please enter a valid password.\n"
+        elif ! [[ "$PASSWORD" =~ [a-z] ]]; then
+            echo -e "\nPassword must contain at least one lowercase letter."
+            echo -e "Please enter a valid password.\n"
+        elif ! [[ "$PASSWORD" =~ [0-9] ]]; then
+            echo -e "\nPassword must contain at least one number."
+            echo -e "Please enter a valid password.\n"
+        else
         break
     fi
 done
