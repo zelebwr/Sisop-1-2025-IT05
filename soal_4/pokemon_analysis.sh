@@ -472,6 +472,7 @@ if [ $FIND_CHECK -eq 1 ]; then
 					print $0;
 				}
 			')
+			echo "$CSV_HEADER"
 			echo "$CSV_TAIL"
 		elif [ $OUTPUT_TYPE == "-f" ] || [ $OUTPUT_TYPE == "--focused" ]; then
 			CSV_TAIL=$(echo "$CSV_TAIL" | awk -F, -v col="$FIND_COLUMN" -v val="$FIND_VALUE" '
@@ -490,6 +491,7 @@ if [ $FIND_CHECK -eq 1 ]; then
                 amt--;
             }
         ')
+		echo "$CSV_HEADER"
 		echo "$CSV_TAIL"
 	elif [ $OUTPUT_TYPE == "-f" ] || [ $OUTPUT_TYPE == "--focused" ]; then
 		CSV_TAIL=$(echo "$CSV_TAIL" | awk -F, -v col="$FIND_COLUMN" -v val="$FIND_VALUE" -v amt="$FIND_AMOUNT" '
