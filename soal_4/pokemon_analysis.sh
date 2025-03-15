@@ -86,6 +86,7 @@ Options:
                             of the matching pattern.
         -c, --column [NUM]  Choose the column to search.
         -A, --amount [NUM]  Limit the number of results.
+            -e, --every     Output every match.
         -o, --output        Specify output format:
             -r, --row       Output entire row containing the match.
             -f, --focused   Output only the exact match.
@@ -221,7 +222,7 @@ while [ $# -gt 0 ] do
 			SORT_OUTPUT=1
 			case $2 in
 				-c|--column)
-					if ! is_integer "$3" || [ "$3" -eq 0 ]; then
+					if ! is_integer "$3" || [ "$3" -le 0 ]; then
 						error_column
 						exit 1
 					fi
@@ -236,7 +237,7 @@ while [ $# -gt 0 ] do
 				-R|--reverse)
 					SORT_ORDER=1
 					if [ $3 == "-c" ] || [ $3 == "--column" ]; then
-						if ! is_integer "$4" || [ "$4" -eq 0 ]; then
+						if ! is_integer "$4" || [ "$4" -le 0 ]; then
 							error_column
 							exit 1
 						fi
@@ -261,14 +262,14 @@ while [ $# -gt 0 ] do
 			COMMAND+="Inquisition "
 			case $3 in
 				-c|--column)
-					if ! is_integer "$4" || [ "$4" -eq 0 ]; then
+					if ! is_integer "$4" || [ "$4" -le 0 ]; then
 						error_column
 						exit 1
 					fi
 					FIND_COLUMN=$4
 					case $5 in
 						-A|--amount)
-							if ! is_integer "$6" || [ "$6" -eq 0 ]; then
+							if ! is_integer "$6" || [ "$6" -le 0 ]; then
 								error_amount
 								exit 1
 							fi
@@ -290,7 +291,7 @@ while [ $# -gt 0 ] do
 							if [ $6 == "-r" ] || [ $6 == "--row" ] ||  [ $6 == "-f" ] || [ $6 == "--focused" ]; then
 								OUTPUT_TYPE=$6
 								if [ $7 == "-A" ] || [ $7 == "--amount" ]; then
-									if ! is_integer "$8" || [ "$8" -eq 0 ]; then
+									if ! is_integer "$8" || [ "$8" -le 0 ]; then
 										error_amount
 										exit 1
 									fi
@@ -311,7 +312,7 @@ while [ $# -gt 0 ] do
 					esac
 					;;
 				-A|--amount)
-					if ! is_integer "$4" || [ "$4" -eq 0 ]; then
+					if ! is_integer "$4" || [ "$4" -le 0 ]; then
 						error_amount
 						exit 1
 					fi
@@ -321,7 +322,7 @@ while [ $# -gt 0 ] do
 							if [ $6 == "-r" ] || [ $6 == "--row" ] ||  [ $6 == "-f" ] || [ $6 == "--focused" ]; then
 								OUTPUT_TYPE=$6
 								if [ $7 == "-c" ] || [ $7 == "--column" ]; then
-									if ! is_integer "$8" || [ "$8" -eq 0 ]; then
+									if ! is_integer "$8" || [ "$8" -le 0 ]; then
 										error_column
 										exit 1
 									fi
@@ -337,7 +338,7 @@ while [ $# -gt 0 ] do
 							fi
 							;;
 						-c|--column)
-							if ! is_integer "$6" || [ "$6" -eq 0 ]; then
+							if ! is_integer "$6" || [ "$6" -le 0 ]; then
 								error_column
 								exit 1
 							fi
@@ -365,13 +366,13 @@ while [ $# -gt 0 ] do
 						OUTPUT_TYPE=$4
 						case $5 in
 							-c|--column)
-								if ! is_integer "$6" || [ "$6" -eq 0 ]; then
+								if ! is_integer "$6" || [ "$6" -le 0 ]; then
 									error_column
 									exit 1
 								fi
 								FIND_COLUMN=$6
 								if [ $7 == "-A" ] || [ $7 == "--amount" ]; then
-									if ! is_integer "$8" || [ "$8" -eq 0 ]; then
+									if ! is_integer "$8" || [ "$8" -le 0 ]; then
 										error_amount
 										exit 1
 									fi
@@ -382,13 +383,13 @@ while [ $# -gt 0 ] do
 								fi
 								;;
 							-A|--amount)
-								if ! is_integer "$6" || [ "$6" -eq 0 ]; then
+								if ! is_integer "$6" || [ "$6" -le 0 ]; then
 									error_amount
 									exit 1
 								fi
 								FIND_AMOUNT=$6
 								if [ $7 == "-c" ] || [ $7 == "--column" ]; then
-									if ! is_integer "$8" || [ "$8" -eq 0 ]; then
+									if ! is_integer "$8" || [ "$8" -le 0 ]; then
 										error_column
 										exit 1
 									fi
@@ -448,6 +449,27 @@ if [ $FIND_CHECK -eq 1 ]; then
 	if [ $SORT_OUTPUT -eq 1 ]; then
 		SORT_OUTPUT=0 # disable sort output
 	fi
+	if [ $FIND_AMOUNT == "-e" ] || [ $FIND_AMOUNT == "--every" ]; then
+		if [ $OUTPUT_TYPE == "-r" ] || [ $OUTPUT_TYPE == "--row" ]; then
+			CSV_FILE=$(echo "$CSV_FILE" | awk -F, -v col=$FIND_COLUMN -v val=$FIND_VALUE -'{
+				while ($col ~ val) {
+					print $0;
+				}
+			}')
+			archaic_message
+			echo "$CSV_FILE"
+		elif [ $OUTPUT_TYPE == "-f" ] || [ $OUTPUT_TYPE == "--focused" ]; then
+			CSV_FILE=$(echo "$CSV_FILE" | awk -F, -v col=$FIND_COLUMN -v val=$FIND_VALUE -v amt=$FIND_AMOUNT -'{
+				while ($col ~ val) {
+					print $0;
+				}
+			}')
+			archaic_message
+			echo "$CSV_FILE" | grep -o "$FIND_VALUE" 
+			echo "The amount of occurrences of the focused value is: "
+			echo "$CSV_FILE" | grep -o "$FIND_VALUE" | wc -l
+		fi
+
 	if [ $OUTPUT_TYPE == "-r" ] || [ $OUTPUT_TYPE == "--row" ]; then
 		CSV_FILE=$(echo "$CSV_FILE" | awk -F, -v col=$FIND_COLUMN -v val=$FIND_VALUE -v amt=$FIND_AMOUNT -'{
 			while (amt > 0 && $col ~ val) {
@@ -455,6 +477,7 @@ if [ $FIND_CHECK -eq 1 ]; then
 				amt--;
 			}
 		}')
+		archaic_message
 		echo "$CSV_FILE"
 	elif [ $OUTPUT_TYPE == "-f" ] || [ $OUTPUT_TYPE == "--focused" ]; then
 		CSV_FILE=$(echo "$CSV_FILE" | awk -F, -v col=$FIND_COLUMN -v val=$FIND_VALUE -v amt=$FIND_AMOUNT -'{
@@ -463,6 +486,7 @@ if [ $FIND_CHECK -eq 1 ]; then
 				amt--;
 			}
 		}')
+		archaic_message
 		echo "$CSV_FILE" | grep -o "$FIND_VALUE" 
 		echo "The amount of occurrences of the focused value is: "
 		echo "$CSV_FILE" | grep -o "$FIND_VALUE" | wc -l
