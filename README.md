@@ -46,7 +46,7 @@ $ chmod -R +x .
 
 > dsotm.sh is a Bash script containing five tracks from The Dark Side of the Moon, each producing different terminal outputs. When executed, the script first clears the terminal to ensure that its effects are displayed correctly without interference. The script must be run using the following format: **./dsotm.sh --play=”<Track>”** 
 
-> where <Track> represents one of the selected song names. This is required for the script to function properly.
+> where **<Track>** represents one of the selected song names. This is required for the script to function properly.
 
 ``` 
 #!/bin/bash
@@ -163,6 +163,30 @@ done
 
 ### 5. Track : Brain Damage
 >  Mode Details : Displays a list of system processes, functioning like a simplified task manager, updating every second
+```
+ while true; do
+        clear
+
+         echo -e "\e[1;31m========================== B R A I N  D A M A G E ==========================\e[0m\n"
+         echo -e "\e[1;31mPID         USER            PR      NI        CPU%       MEM%       COMMAND\e[0m"
+         echo -e "\e[1;31m----------------------------------------------------------------------------\e[0m"
+
+        top -b -n 1 -o %CPU | awk 'NR>7 {
+                if (NR % 2 == 0)
+                printf "\033[1;37m%-12s %-15s %-7s %-7s %-10s %-10s %-s\033[0m\n", $1, $2, $3, $4, $9, $10, $12;
+                else
+                    printf "\033[38;5;250m%-12s %-15s %-7s %-7s %-10s %-10s %-s\033[0m\n", $1, $2, $3, $4, $9, $10, $12;
+        }' | head -n 10
+
+        sleep 1
+        done
+```
+Clears the terminal before each update.
+Displays a formatted table with PID, USER, Priority, CPU%, MEM%, and Command.
+Updates every second to reflect live system changes.
+Alternates row colors for better readability.
+
+#### Before Revision
 ```
 while true; do
     echo -e "\e[1;37m=== Brain Damage ===\e[0m"
