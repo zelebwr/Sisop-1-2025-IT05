@@ -44,7 +44,9 @@ $ chmod -R +x .
 
 ### dsotm.sh
 
-> dsotm.sh is a Bash script containing five tracks from The Dark Side of the Moon, each producing different terminal outputs. When executed, the script first clears the terminal to ensure that its effects are displayed correctly without interference. The script must be run using the following format: **./dsotm.sh --play=”<Track>”** 
+> dsotm.sh is a Bash script containing five tracks from The Dark Side of the Moon, each producing different terminal outputs. When executed, the script first clears the terminal to ensure that its effects are displayed correctly without interference.
+>  The script must be run using the following format:
+```./dsotm.sh --play=”<Track>"``` 
 
 > where **<Track>** represents one of the selected song names. This is required for the script to function properly.
 
