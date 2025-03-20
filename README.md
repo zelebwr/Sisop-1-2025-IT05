@@ -44,9 +44,9 @@ $ chmod -R +x .
 
 ### dsotm.sh
 
->   > dsotm.sh is a Bash script containing five tracks from The Dark Side of the Moon, each producing different terminal outputs. When executed, the script first clears the terminal to ensure that its effects are displayed correctly without interference. The script must be run using the following format: **./dsotm.sh --play=”<Track>”** 
+> dsotm.sh is a Bash script containing five tracks from The Dark Side of the Moon, each producing different terminal outputs. When executed, the script first clears the terminal to ensure that its effects are displayed correctly without interference. The script must be run using the following format: **./dsotm.sh --play=”<Track>”** 
 
->   > where <Track> represents one of the selected song names. This is required for the script to function properly.
+> where <Track> represents one of the selected song names. This is required for the script to function properly.
 
 ``` 
 #!/bin/bash
@@ -72,7 +72,7 @@ case "$TRACK" in
 ```
 Uses ``` case ``` to determine the action based on the selected song.
 ### 1. Track : Speak to Me 
->   > Mode Details: Displays given affirmation quotes with terminal effects`
+> Mode Details: Displays given affirmation quotes with terminal effects`
 ```
 curl -s https://raw.githubusercontent.com/annthurium/affirmations/refs/heads/main/affirmations.js | sed '1d;$d' | tr -d '",;]' | while IFS= read -r line; do
     echo "$line"
@@ -83,7 +83,7 @@ Fetches data from the Affirmations API and removes the first and last lines and 
 The loop prints each affirmation with a 1-second delay.
 
 ### 2. Track : On the Run
->   > Mode Details : Displays a loading animation with a progress bar
+>  Mode Details : Displays a loading animation with a progress bar
 
 ```
 while [ $PROGRESS -lt 100 ]; do
@@ -100,7 +100,7 @@ done
 ```PROGRESS=$((PROGRESS + (RANDOM % 10) + 1))``` increases progress randomly.
 
 ### 3. Track : Time
->   > Mode Details : Real-Time Clock with Cron Job
+>  Mode Details : Real-Time Clock with Cron Job
 ```
 if crontab -l | grep -q "$SCRIPT_PATH --play=\"Time\""; then
     echo "Cron job already exists."
@@ -122,7 +122,7 @@ Checks if a cron job for the script already exists.
 The loop continuously updates and displays the current time.
 
 ### 4. Track : Money
->   > Mode Details : Displays a "rain" effect of currency symbols in the terminal, similar to cmatrix but with currency symbols ($, €, £, ¥, etc.)
+>  Mode Details : Displays a "rain" effect of currency symbols in the terminal, similar to cmatrix but with currency symbols ($, €, £, ¥, etc.)
 
 ```
 symbols=( "$" "€" "£" "¥" "¢" "₹" "₩" "₿" "₣" )
@@ -162,7 +162,7 @@ done
 ```sleep 0.1``` Slows down the effect for a smoother animation
 
 ### 5. Track : Brain Damage
->   > Mode Details : Displays a list of system processes, functioning like a simplified task manager, updating every second
+>  Mode Details : Displays a list of system processes, functioning like a simplified task manager, updating every second
 ```
 while true; do
     echo -e "\e[1;37m=== Brain Damage ===\e[0m"
