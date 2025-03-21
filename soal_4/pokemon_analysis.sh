@@ -1,5 +1,59 @@
 #!/bin/bash
 
+# functons
+
+# Just a banter message
+archaic_message() {
+	echo -e "By thy will, thou hast settled upon $COMMAND \bedict!"
+	echo -e "Thus, thine behest shall be mine ordinance!\n"
+}
+
+# error message for in general
+error_general(){
+	echo "Invalid argument: $1"
+	echo "Try using -h or --help for help menu to see what options are available"
+}
+
+# error message when direst is invalid
+error_direct(){
+	echo "Try inserting a proper [URL]/[DIRECTORY]"
+	echo "e.g. -d https://example.com/file.csv"
+	echo "e.g. -d /home/user/file.csv"
+}
+
+# error message when search string is invalid
+error_find(){
+	echo "Try inserting a proper string [STR]"
+	echo "e.g. -f Pikachu"
+}
+
+# error message when column can't be found or is not an integer or less than 0
+error_column(){
+	echo "Try inserting a proper number [NUM]"
+	echo "e.g. -c 2"
+}
+
+# error message when the amount is bigger than the number of rows or negative value or not an integer
+error_amount(){
+	echo "Try inserting a proper number [NUM]"
+	echo "e.g. -A 10"
+}
+
+# error message when output type is invalid
+error_output(){
+	echo "Try using -R or --row for output type"
+	echo "Try using -f or --focused for output type"
+}
+
+# error message when the file is not a valid csv file
+error_csv(){
+	echo "File is not a CSV file"
+	echo "Try inserting a proper CSV file"
+	echo "e.g. -d https://example.com/file.csv"
+	echo "e.g. -d /home/user/file.csv"
+}
+
+# display easter egg function
 easter_egg() {
 	echo -e "\n"
 	cat << EOF
@@ -38,26 +92,13 @@ EOF
 	echo -e "\n"
 }
 
-# Default Values
-COMMAND=""
-INFO_CHECK=0 # 0 for not summary, 1 for summary
-SORT_CHECK=0 # 0 for not sorted, 1 for sorted
-SORT_OUTPUT=0 # 0 for not outputted, 1 for outputted
-SORT_ORDER=0 # 0 for ascending, 1 for descending
-SORT_COLUMN=1 
-FIND_COLUMN=1
-FIND_AMOUNT=10
-FIND_CHECK=0 # 0 for not find, 1 for find
-FIND_VALUE=""
-OUTPUT_TYPE="-r" # -r for row, -c for column, -f for focused
-EVERY_MATCH=0
-CSV_LINK="https://drive.usercontent.google.com/u/0/uc?id=1n-2n_ZOTMleqa8qZ2nB8ALAbGFyN4-LJ&export=download"
-CSV_DIR=0 # 0 for not directory, 1 for directory
-
-# Display help menu
+# display help menu function
 help_menu() {
+
+	# ASCII art
 	echo "09 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 2f 0d 0a 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 5f 2c 2e 2d 2d 2d 2d 2d 2d 2e 2e 2e 2e 5f 5f 5f 2c 2e 27 20 27 2c 2e 2d 2e 0d 0a 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 2c 2d 27 20 20 20 20 20 20 20 20 20 20 5f 2c 2e 2d 2d 22 20 20 20 20 20 20 20 20 7c 0d 0a 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 2c 27 20 20 20 20 20 20 20 20 20 5f 2e 2d 27 20 20 20 20 20 20 20 20 20 20 20 20 20 20 2e 0d 0a 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 2f 20 20 20 2c 20 20 20 20 20 2c 27 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 60 0d 0a 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 2e 20 20 20 2f 20 20 20 20 20 2f 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 60 60 2e 0d 0a 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 7c 20 20 7c 20 20 20 20 20 2e 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 5c 2e 5c 0d 0a 20 20 20 20 20 20 20 5f 5f 5f 5f 20 20 20 20 20 20 7c 5f 5f 5f 2e 5f 2e 20 20 7c 20 20 20 20 20 20 20 5f 5f 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 5c 20 60 2e 0d 0a 20 20 20 20 20 2e 27 20 20 20 20 60 2d 2d 2d 22 22 20 20 20 20 20 20 20 60 60 22 2d 2e 2d 2d 22 27 60 20 20 5c 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 2e 20 20 5c 0d 0a 20 20 20 20 2e 20 20 2c 20 20 20 20 20 20 20 20 20 20 20 20 5f 5f 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 60 20 20 20 20 20 20 20 20 20 20 20 20 20 20 7c 20 20 20 2e 0d 0a 20 20 20 20 60 2c 27 20 20 20 20 20 20 20 20 20 2c 2d 22 27 20 20 2e 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 5c 20 20 20 20 20 20 20 20 20 20 20 20 20 7c 20 20 20 20 4c 0d 0a 20 20 20 2c 27 20 20 20 20 20 20 20 20 20 20 27 20 20 20 20 5f 2e 27 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 2d 2e 5f 20 20 20 20 20 20 20 20 20 20 2f 20 20 20 20 7c 0d 0a 20 20 2c 60 2d 2e 20 20 20 20 2c 22 2e 20 20 20 60 2d 2d 27 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 3e 2e 20 20 20 20 20 20 2c 27 20 20 20 20 20 7c 0d 0a 20 2e 20 2e 27 5c 27 20 20 20 60 2d 27 20 20 20 20 20 20 20 5f 5f 20 20 20 20 2c 20 20 2c 2d 2e 20 20 20 20 20 20 20 20 20 2f 20 20 60 2e 5f 5f 2e 2d 20 20 20 20 20 20 2c 27 0d 0a 20 7c 7c 3a 2c 20 2e 20 20 20 20 20 20 20 20 20 20 20 2c 27 20 20 3b 20 20 2f 20 20 2f 20 5c 20 60 20 20 20 20 20 20 20 20 60 2e 20 20 20 20 2e 20 20 20 20 20 20 2e 27 2f 0d 0a 20 6a 7c 3a 44 20 20 5c 20 20 20 20 20 20 20 20 20 20 60 2d 2d 27 20 20 27 20 2c 27 5f 20 20 2e 20 2e 20 20 20 20 20 20 20 20 20 60 2e 5f 5f 2c 20 5c 20 20 20 2c 20 2f 0d 0a 2f 20 4c 3a 5f 20 20 7c 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 2e 20 20 22 27 20 3a 5f 3b 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 60 2e 27 2e 27 0d 0a 2e 20 20 20 20 22 22 27 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 22 22 22 22 22 27 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 56 0d 0a 20 60 2e 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 2e 20 20 20 20 60 2e 20 20 20 5f 2c 2e 2e 20 20 60 0d 0a 20 20 20 60 2c 5f 20 20 20 2e 20 20 20 20 2e 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 5f 2c 2d 27 2f 20 20 20 20 2e 2e 20 60 2c 27 20 20 20 5f 5f 20 20 60 0d 0a 20 20 20 20 29 20 5c 60 2e 5f 20 20 20 20 20 20 20 20 5f 5f 5f 2e 2e 2e 2e 2d 2d 2d 2d 22 27 20 20 2c 27 20 20 20 2e 27 20 20 5c 20 7c 20 20 20 27 20 20 5c 20 20 2e 0d 0a 20 20 20 2f 20 20 20 60 2e 20 22 60 2d 2e 2d 2d 22 27 20 20 20 20 20 20 20 20 20 5f 2c 27 20 2c 27 20 20 20 20 20 60 2d 2d 2d 27 20 7c 20 20 20 20 60 2e 2f 20 20 7c 0d 0a 20 20 2e 20 20 20 5f 20 20 60 22 22 27 2d 2d 2e 2e 5f 5f 5f 5f 5f 2e 2e 2d 2d 22 20 20 20 2c 20 20 20 20 20 20 20 20 20 20 20 20 20 27 20 20 20 20 20 20 20 20 20 7c 0d 0a 20 20 7c 20 2e 22 20 60 2e 20 60 2d 2e 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 2f 2d 2e 20 20 20 20 20 20 20 20 20 20 20 2f 20 20 20 20 20 20 20 20 20 20 2c 0d 0a 20 20 7c 20 60 2e 5f 2e 27 20 20 20 20 60 2c 5f 20 20 20 20 20 20 20 20 20 20 20 20 3b 20 20 2f 20 20 20 20 20 20 20 20 20 2c 27 20 20 20 20 20 20 20 20 20 20 2e 0d 0a 20 2e 27 20 20 20 20 20 20 20 20 20 20 2f 7c 20 60 2d 2e 20 20 20 20 20 20 20 20 2e 20 2c 27 20 20 20 20 20 20 20 20 20 2c 20 20 20 20 20 20 20 20 20 20 20 2c 0d 0a 20 27 2d 2e 5f 5f 20 5f 5f 20 5f 2c 27 2c 27 20 20 20 20 27 60 2d 2e 2e 5f 5f 5f 3b 2d 2e 2e 2e 5f 5f 20 20 20 2c 2e 27 5c 20 5f 5f 5f 5f 2e 5f 5f 5f 2e 27 0d 0a 20 60 22 5e 2d 2d 27 2e 2e 27 20 20 20 27 2d 60 2d 5e 2d 27 22 2d 2d 20 20 20 20 60 2d 5e 2d 27 60 2e 27 27 22 22 22 22 22 60 2e 2c 5e 2e 60 2e 2d 2d 27" | xxd -r -p
 
+	# the main help menu
     cat << EOF
 
 
@@ -89,7 +130,7 @@ Options:
                             of the matching pattern.
         -c, --column [NUM]  Choose the column to search.
         -A, --amount [NUM]  Limit the number of results.
-            -E, --every     Output every match.
+		-E, --every         Output every match.
         -o, --output        Specify output format:
             -r, --row       Output entire row containing the match.
             -f, --focused   Output only the exact match.
@@ -98,42 +139,9 @@ Options:
 EOF
 }
 
-# Just a banter message
-archaic_message() {
-	echo -e "By thy will, thou hast settled upon $COMMAND \bedict!"
-	echo -e "Thus, thine behest shall be mine ordinance!\n"
-}
+# check functions
 
-error_general(){
-	echo "Try using -h or --help for help menu"
-}
-
-error_direct(){
-	echo "Try inserting a proper [URL]/[DIRECTORY]"
-	echo "e.g. -d https://example.com/file.csv"
-	echo "e.g. -d /home/user/file.csv"
-}
-
-error_find(){
-	echo "Try inserting a proper string [STR]"
-	echo "e.g. -f Pikachu"
-}
-
-error_column(){
-	echo "Try inserting a proper number [NUM]"
-	echo "e.g. -c 2"
-}
-
-error_amount(){
-	echo "Try inserting a proper number [NUM]"
-	echo "e.g. -A 10"
-}
-
-error_output(){
-	echo "Try using -r or --row for output type"
-	echo "Try using -f or --focused for output type"
-}
-
+# check if the file is a csv file
 csv_dir_check(){
 	local temp="$1"
 	if [[ "$temp" == *.csv ]]; then
@@ -143,6 +151,7 @@ csv_dir_check(){
 	fi
 }
 
+# check if the url is valid
 valid_url() {
     local url="$1"
     if curl --output /dev/null --silent --head --fail "$url"; then
@@ -152,6 +161,7 @@ valid_url() {
     fi
 }
 
+# check if the link is a csv file
 csv_link_check(){
 	local temp="$1"
 	if echo "$temp" | head -n 5 | grep -q ','; then
@@ -161,19 +171,167 @@ csv_link_check(){
 	fi
 }
 
-error_csv(){
-	echo "File is not a CSV file"
-	echo "Try inserting a proper CSV file"
-	echo "e.g. -d https://example.com/file.csv"
-	echo "e.g. -d /home/user/file.csv"
-}
-
+# check if the argument is an integer
 is_integer() {
     local s="$1"
     [[ "$s" =~ ^[0-9]+$ ]]
 }
 
-# checking for arguments
+# argument parsing
+while [ $# -gt 0 ]; do
+	case "$1" in 
+	 	# main: HELP
+		-h|--help) help_menu; exit 0;;
+
+		# main: DIRECT
+		-d|--direct)
+			# check if the next argument is empty or starts with '-'
+			if [[ -z "$2" || "$2" =~ ^- ]]; then 
+				echo "The next argument cant't be empty or starts with '-'."
+				echo "Try: -d https://example.com/file.csv"
+				echo "Try: --direct /home/user/file.csv"
+				echo "Try using -h or --help for help."
+				exit 1;
+			# else 
+			# check if it's a link or not
+				# check if it's a valid link or not
+					# check if it's a csv file or not
+						# fetch data
+						# check if it's successful or not
+				# else 
+				# check if it's a valid path or not
+					# check if it's a csv file or not
+						# fetch data
+						# check if it's successful or not
+					# else
+				# else
+			fi
+			;;
+		
+		# main: INFO
+		-i|--info)
+			# sort the table
+			# display the highest value of each column
+			exit 0
+			;;
+		
+		# main: SORT
+		-s|--sort)
+			# sort the able
+			shift
+			while [ $# -gt 0 ]; do 
+				case "$1" in
+					# sub SORT: COLUMN
+					-c|--column)
+						# check if the next argument is empty or starts with '-'
+						if [[ -z "$2" || "$2" =~ ^- ]]; then 
+							echo "The next argument cant't be empty or starts with '-'."
+							echo "Try: -c 2; to refer to sort based on column 2"
+							echo "Try using -h or --help for help."
+							exit 1;
+						# else
+						# check if it's an integer or not and if it's less than 0 or not
+							# check if it's a valid column or not
+								# sort the table
+							# else
+						# else
+						fi
+						;;
+
+					# sub SORT: REVERSE
+					-R|--reverse)
+						# sort the table in reverse order
+						;;
+					*) break;; 
+				esac
+			done
+			;;
+
+		# main: FIND
+		-f|--find)
+			# check if the next argument is empty or starts with '-'
+			if [[ -z "$2" || "$2" =~ ^- ]]; then
+				echo "The next argument cant't be empty or starts with '-'."
+				echo "Try: -f Pikachu; to search for Pikachu"
+				echo "Try using -h or --help for help."
+				while [ $# -gt 0 ]; do
+					case "$1" in
+						# sub FIND: COLUMN
+						-c|--column)
+							# check if the next argument is empty or starts with '-'
+							if [[ -z "$2" || "$2" =~ ^- ]]; then 
+								echo "The next argument cant't be empty or starts with '-'."
+								echo "Try: -c 2; to refer to search based on column 2"
+								echo "Try using -h or --help for help."
+								exit 1;
+							# else
+							# check if it's an integer or not and if it's less than 0 or not
+								# check if it's a valid column or not
+									# check if it's a valid string or not
+										# check if it's a valid amount or not
+											# check if it's a valid output type or not
+												# find the string
+												# display the output
+											# else
+										# else
+									# else
+								fi
+								;;
+
+						# sub FIND: AMOUNT
+						-A|--amount)
+							# check if the next argument is empty or starts with '-'
+							if [[ -z "$2" || "$2" =~ ^- ]]; then 
+								echo "The next argument cant't be empty or starts with '-'."
+								echo "Try: -A 10; to output 10 results from the search"
+								echo "Try using -h or --help for help."
+								exit 1;
+							# else
+							# check if it's an integer or not and if it's less than 0 or not
+								# check if it's a valid amount or not
+									# check if it's a valid output type or not
+										# find the string
+										# display the output
+									# else
+								# else
+							# else
+							fi
+							;;
+						
+						# sub FIND: EVERY
+						-E|--every)
+							# check if it's a valid string or not
+								# check if it's a valid amount or not
+									# check if it's a valid output type or not
+										# find the string
+										# display the output
+									# else
+								# else
+							# else
+							;;
+
+						# sub FIND: OUTPUT
+						-o|--output)
+							# check if the next argument is empty or starts with '-'
+							if [[ -z "$2" || "$2" =~ ^- ]]; then 
+								echo "The next argument cant't be empty or starts with '-'."
+								echo "Try: -o -r; to refer to search based on row"
+								echo "Try
+				
+				# check if it's a valid column or not
+					# check if it's a valid amount or not
+						# check if it's a valid output type or not
+							# find the string
+							# display the output
+						# else
+					# else
+				# else
+
+			fi
+			;;
+
+
+
 while [ $# -gt 0 ]; do
 	case $1 in
 		-h|--help)
@@ -509,7 +667,7 @@ fi
 # output the sorted dataset
 if [ $SORT_OUTPUT -eq 1 ]; then
 	echo "$CSV_HEADER"
-	echo "$CSV_TAIL"
+	echo "$CSV_FILE"
 fi
 
 # don bang
