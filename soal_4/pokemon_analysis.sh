@@ -315,6 +315,8 @@ while [ $# -gt 0 ]; do
 				echo "Try using -h or --help for help."
 			else
 				FIND_VALUE="$2" # find value
+				shift 2
+
 				while [ $# -gt 0 ]; do
 					case "$1" in
 						
@@ -331,9 +333,10 @@ while [ $# -gt 0 ]; do
 								if [[ "$2" =~ ^[0-9]+,[0-9]+$ ]]; then
 									IFS=',' read -r FIND_COLUMN1 FIND_COLUMN2 <<< "$2"
 									USE_SECOND_COLUMN=1
+									shift 2
 								elif [[ "$2" =~ ^[0-9]+$ ]]; then
 									FIND_COLUMN1="$2"
-
+									shift 2
 								else 
 									echo -e "The \"$2\" argument must be an integer."
 									echo "Try: -c 2; to refer to search based on column 2"
@@ -379,7 +382,7 @@ while [ $# -gt 0 ]; do
 								echo "Try: -o focused"
 								exit 1
 							else 
-								if [[ "$2" == "r" || "$2" == "row" || "$2" == "f" || "$2" == "focused" ]]; then
+								if [[ "$2" == "-r" || "$2" == "--row" || "$2" == "-f" || "$2" == "--focused" ]]; then
 									OUTPUT_TYPE="$2"
 									shift 2
 								else 
