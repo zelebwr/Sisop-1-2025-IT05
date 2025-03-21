@@ -75,12 +75,11 @@ curl -s https://raw.githubusercontent.com/annthurium/affirmations/refs/heads/mai
     sleep 1
 done
 ```
-Fetches data from the Affirmations API and removes the first and last lines and unnecessary characters from the API response 
+Fetches data from the Affirmations API and removes the first and last lines and unnecessary characters from the API response. 
+The loop prints each affirmation with a 1-second delay.
+
 #### Here's the result:
 ![Speak to Me](./assets/soal_3/Speak-to-Me.png "Speak to Me")
-
-
-The loop prints each affirmation with a 1-second delay.
 
 ### 2. Track : On the Run
 >  Mode Details : Displays a loading animation with a progress bar
@@ -121,6 +120,7 @@ Checks if a cron job for the script already exists.
 The loop continuously updates and displays the current time.
 #### Here's the result:
 ![Time](./assets/soal_3/Time.png "Time")
+
 ### 4. Track : Money
 >  Mode Details : Displays a "rain" effect of currency symbols in the terminal, similar to cmatrix but with currency symbols ($, €, £, ¥, etc.)
 
