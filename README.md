@@ -1,4 +1,4 @@
-# Sisop-1-2025-IT05
+<img width="1470" alt="image" src="https://github.com/user-attachments/assets/d111e3e0-1770-412d-80e1-9e1509b81c92" /># Sisop-1-2025-IT05
 
 ## Repo Structure Setup
 
@@ -63,6 +63,9 @@ You also have to collect their choice, use ↓↓↓
 ```bash
 read -p "Masukkan Menu Pilihanmu : " menu
 ```
+#### Here's the result:
+![Menu](./assets/soal_1/menu.png "Menu")
+
 
 Now we're moving to the challenges they'll face!
 1. Poppo is eager to know how many books Chris Hemsworth has read! Let's build a system that fetches and processes the data to reveal the answer.
@@ -76,6 +79,8 @@ END {printf "Chris Hemsworth membaca %d buku.\n", count}
 '
 ```
 > Using if feature, adjusting Poppo&Siroyo needs. Try to show the data and filter Chris's name.
+#### Here's the result:
+![no1](./assets/soal_1/no1 "no1")
 
 2. Siroyo, always the analyst, wants to know how long people read using the magic tablet. Let's build a system that fetches and processes the data to reveal the answer.
    
@@ -87,6 +92,8 @@ $8 == "Tablet" { total += $6; count++ }
 END {printf "Rata-rata durasi membaca dengan Tablet adalah %.1f menit.", total/count}'
 ```
 > Using if feature, adjusting Poppo&Siroyo needs. Try to show the data and count the average time of people reading by Tablets.
+#### Here's the result:
+![no2](./assets/soal_1/no2.jpeg "no2")
 
 3. While Siroyo is busy analyzing the magic tablet, Poppo comes up with a brilliant idea. 'If we already know how they read, I want to reward the friend who loves their book the most!' Poppo then sets out to find the person who gave the highest rating, along with their name and the book title.
 
@@ -104,6 +111,8 @@ END {printf "Pembaca dengan rating tertinggi (%.1f):\n", ratingMax;
 }'
 ```
 > Using if feature, adjusting Poppo&Siroyo needs. Try to show the data and find the highest rate given by the readers.
+#### Here's the result:
+![no3](./assets/soal_1/no3.jpeg "no3")
 
 4. Siroyo needs a stellar book club report! Curious about Asia’s top genre after 2023, he reopens reading_data.csv.
 
@@ -127,6 +136,8 @@ END {
 }'
 ```
 > Using if feature, adjusting Poppo&Siroyo needs. Try to show the data and discover the best (top) genre of books after 2023.
+#### Here's the result:
+![no4](./assets/soal_1/no4.jpeg "no4")
 
 The last thing needed to do is to "close" the program using this magic word↓↓↓
 
