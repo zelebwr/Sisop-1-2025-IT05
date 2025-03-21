@@ -809,3 +809,69 @@ CSV_TAIL=$(echo "$CSV_FILE" | awk -F, -v col1="$FIND_COLUMN1" -v val="$FIND_VALU
 
 ```
 
+### Filter Pokemon based on 2 columns (Type)
+
+Used Command:
+
+```bash
+./pokemon_analysis.sh -s -c 2 -R -f Dark -c 4,5 -E\
+```
+
+Output: 
+![soal_4.png](assets/soal_4/fourth.png)
+
+Background command starting from line 448: 
+# sort the document
+if [[ $SORT_CHECK -eq 1 ]]; then
+	if [[ $SORT_REVERSE -eq 0 ]]; then # ascending
+		CSV_FILE=$(echo "$CSV_FILE" | sort -t, -nk$SORT_COLUMN) 
+	elif [[ $SORT_REVERSE -eq 1 ]]; then # descending
+		CSV_FILE=$(echo "$CSV_FILE" | sort -t, -nrk$SORT_COLUMN)
+	fi
+fi
+
+# find the document
+```bash
+if [[ $FIND_CHECK -eq 1 ]]; then
+
+	if [[ "$USE_SECOND_COLUMN" -eq 1 ]]; then
+        CSV_TAIL=$(echo "$CSV_FILE" | awk -F, -v col1="$FIND_COLUMN1" -v col2="$FIND_COLUMN2" -v val="$FIND_VALUE" '
+            $col1 ~ val || $col2 ~ val { print $0 }
+        ')
+    else
+        CSV_TAIL=$(echo "$CSV_FILE" | awk -F, -v col1="$FIND_COLUMN1" -v val="$FIND_VALUE" '
+            $col1 ~ val { print $0 }
+        ')
+    fi
+
+	# check if the value is found
+	if [[ -z "$CSV_TAIL" ]]; then
+        echo "The string \"$FIND_VALUE\" could not be found in column $FIND_COLUMN."
+        exit 1
+    fi
+
+	 # Continue processing if the string is found
+    if [[ $OUTPUT_TYPE == "-r" ]] || [[ $OUTPUT_TYPE == "--row" ]]; then
+        echo "$CSV_HEADER"
+        echo "$CSV_TAIL"
+    elif [[ $OUTPUT_TYPE == "-f" ]] || [[ $OUTPUT_TYPE == "--focused" ]]; then
+        echo "$CSV_TAIL" | grep -o "$FIND_VALUE"
+        echo -n "The amount of occurrences of the focused value is: "
+        echo "$CSV_TAIL" | grep -o "$FIND_VALUE" | wc -l
+    fi
+fi
+``` 
+
+### Error Handling
+
+Used command: 
+```
+./pokemon_analysis.sh -s -c 2 -R -f Rock -c 4 -A -E -o -r
+```
+
+### Help Menu
+
+Used command: 
+```bash 
+./pokemon_analysis.sh -h
+```
