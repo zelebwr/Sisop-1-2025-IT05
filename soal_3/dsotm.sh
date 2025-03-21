@@ -94,21 +94,24 @@ if [[ "$1" =~ ^--play= ]]; then #$1 sbg argumen pertama yg diberikan script & ce
 	done
 	;;
 	"Brain Damage")
-		while true; do
-	echo -e "\e[1;37m=== Brain Damage ===\e[0m"
-    	echo ""
 
-	ps aux --sort=-%cpu | awk 'NR<=11' | awk '{ #menampilkan proses paling banyak menggunakan CPU & mengambil 10 proses teratas
-        if (NR % 2 == 0) 
-            print "\033[1;37m" $0 "\033[0m";
-        else
-            print "\033[38;5;110m" $0 "\033[0m";
-    }'
-
-    	sleep 1
+	while true; do
     	clear
 
+   	 echo -e "\e[1;31m========================== B R A I N  D A M A G E ==========================\e[0m\n"
+    	 echo -e "\e[1;31mPID         USER            PR      NI        CPU%       MEM%       COMMAND\e[0m"
+   	 echo -e "\e[1;31m----------------------------------------------------------------------------\e[0m"
+
+    	top -b -n 1 -o %CPU | awk 'NR>7 {
+        	if (NR % 2 == 0)
+            	printf "\033[1;37m%-12s %-15s %-7s %-7s %-10s %-10s %-s\033[0m\n", $1, $2, $3, $4, $9, $10, $12;
+        	else
+        	    printf "\033[38;5;250m%-12s %-15s %-7s %-7s %-10s %-10s %-s\033[0m\n", $1, $2, $3, $4, $9, $10, $12;
+    	}' | head -n 10
+
+    	sleep 1
 	done
+
 	;;
 
         *)
