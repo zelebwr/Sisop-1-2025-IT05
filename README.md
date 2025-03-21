@@ -1,5 +1,3 @@
-<img width="1470" alt="image" src="https://github.com/user-attachments/assets/d111e3e0-1770-412d-80e1-9e1509b81c92" /># Sisop-1-2025-IT05
-
 ## Repo Structure Setup
 
 This is simply done by using the `mkdir` and `touch` command. 
@@ -310,6 +308,9 @@ EOF
 done
 ```
 ![terminal](./assets/soal_2/home-terminal.jpeg "terminal")
+
+exit program
+![back](./assets/soal_2/back.jpeg "back")
 ### Soal 3 - CLI UI/UX Gacor
 #### dsotm.sh
 
