@@ -137,6 +137,171 @@ The last thing needed to do is to "close" the program using this magic wordâ†“â†
 fi
 ```
 
+### Soal 2 - Game Kece
+#### Login Script (`login.sh`)
+
+First, define the script as a bash script by adding the shebang line:
+
+```bash
+#!/bin/bash
+```
+
+Then, define the necessary path variables to locate the database file:
+
+```bash
+SCRIPT_DIR=$(dirname "$(realpath "$0")")
+DB_PATH_PLYR="$SCRIPT_DIR/data/player.csv"
+```
+
+Next, check if the database exists:
+
+```bash
+if [ ! -e $DB_PATH_PLYR ]; then
+    echo "Database not found. Please register first."
+    echo "Run script register.sh to register" 
+    exit 1
+fi
+```
+
+The script then prompts the user to enter an email and password, validating them against the database:
+
+```bash
+echo -e "\nLogin\n"
+while true; do
+    echo -n "Email: "
+    read EMAIL
+    if [ -z "$EMAIL" ]; then
+        echo -e "\nEmail cannot be empty. Please enter a valid email.\n"
+    elif ! grep -q "$EMAIL" "$DB_PATH_PLYR"; then
+        echo -e "\nEmail \"$EMAIL\" not found. Please enter a valid email.\n"
+    else
+        break
+    fi
+done
+
+while true; do
+    echo -n "Password: "
+    read -s PASSWORD
+    if [ -z "$PASSWORD" ]; then
+        echo -e "\nPassword cannot be empty. Please enter a valid password.\n"
+    elif ! grep -q "$EMAIL.*$PASSWORD" "$DB_PATH_PLYR"; then
+        echo -e "\nIncorrect password.\n"
+    else
+        break
+    fi
+done
+
+USERNAME=$(awk -F, -v mail="$EMAIL" -v pass="$PASSWORD" '$1==mail && $3==pass {print $2}' "$DB_PATH_PLYR") 
+
+if [ -z "$USERNAME" ]; then
+    echo -e "\nLogin failed.\n"
+else
+    echo -e "\nLogin successful. Welcome back, $USERNAME.\n"
+fi
+```
+
+---
+
+### Register Script (`register.sh`)
+
+The script begins by setting up the database file if it doesn't exist:
+
+```bash
+SCRIPT_DIR=$(dirname "$(realpath "$0")")
+DB_PATH_PLYR="$SCRIPT_DIR/data/player.csv"
+DB_HEADER=$(echo -e "email,username,password\n")
+
+if [ ! -e $DB_PATH_PLYR ]; then
+    mkdir -p $SCRIPT_DIR/data && touch $DB_PATH_PLYR
+    echo "$DB_HEADER" > $DB_PATH_PLYR
+fi
+```
+
+Then, it prompts the user to enter a username, email, and password, validating each input:
+
+```bash
+echo -e "\nRegister new player\n"
+while true; do
+    echo -n "Username: "
+    read USERNAME
+    if [ -z "$USERNAME" ]; then
+        echo -e "\nUsername cannot be empty.\n"
+    else
+        break
+    fi
+done
+
+while true; do
+    echo -n "Email: "
+    read EMAIL
+    if [ -z "$EMAIL" ]; then
+        echo -e "\nEmail cannot be empty.\n"
+    elif grep -q "$EMAIL" "$DB_PATH_PLYR"; then
+        echo -e "\nEmail \"$EMAIL\" already exists.\n"
+    else
+        break
+    fi
+done
+
+while true; do
+    echo -n "Password: "
+    read -s PASSWORD
+    if [ -z "$PASSWORD" ]; then
+        echo -e "\nPassword cannot be empty.\n"
+    else 
+        break
+    fi
+done
+
+echo "$EMAIL,$USERNAME,$PASSWORD" >> $DB_PATH_PLYR
+```
+
+---
+
+### Terminal Interface (`terminal.sh`)
+
+This script provides a menu for user interaction:
+
+```bash
+#!/bin/bash
+
+SCRIPT_DIR=$(dirname "$(realpath "$0")")
+LOGIN_DIR="$SCRIPT_DIR/login.sh"
+REGISTER_DIR="$SCRIPT_DIR/register.sh"
+
+while true; do
+    clear
+    cat << EOF
+========================================
+     Welcome to the Game Terminal
+========================================
+1. Sign Up
+2. Log In
+3. Exit
+========================================
+Choose an option:
+EOF
+    read OPTION
+    case $OPTION in
+        1)
+            bash "$REGISTER_DIR"
+            ;;
+        2)
+            bash "$LOGIN_DIR"
+            ;;
+        3)
+            echo -e "\nGoodbye!"
+            exit 0
+            ;;
+        *)
+            echo -e "\nInvalid option. Try again.\n"
+            ;;
+    esac
+    echo -e "\nPress Enter to continue..."
+    read
+done
+```
+
 ### Soal 3 - CLI UI/UX Gacor
 #### dsotm.sh
 
