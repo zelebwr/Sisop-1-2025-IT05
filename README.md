@@ -198,7 +198,7 @@ fi
 ```
 
 ---
-
+![login](./assets/soal_2/login.jpeg "login")
 ### Register Script (`register.sh`)
 
 The script begins by setting up the database file if it doesn't exist:
