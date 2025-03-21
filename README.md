@@ -43,33 +43,33 @@ $ chmod -R +x .
 
 > dsotm.sh is a Bash script containing five tracks from The Dark Side of the Moon, each producing different terminal outputs. When executed, the script first clears the terminal to ensure that its effects are displayed correctly without interference.
 >  The script must be run using the following format:
-```
+```bash
 ./dsotm.sh --play=”<Track>"
  ``` 
 
 > where **<Track>** represents one of the selected song names. This is required for the script to function properly.
 
-``` 
+```bash
 #!/bin/bash
 ```
 is called a shebang. It tells the system to execute the script using the Bash shell
 
-```
+```bash
 clear
 ```
 Clears the terminal before running the script to ensure a clean display.
-```
+```bash
 if [[ "$1" =~ ^--play= ]]; then 
     TRACK="${1#--play=}"
 ```
 Checks if the first argument matches the expected format, then assigns it to the ```TRACK``` variable.
-``` 
+```bash 
 case "$TRACK" in
 ```
 Uses ``` case ``` to determine the action based on the selected song.
 ### 1. Track : Speak to Me 
 > Mode Details: Displays given affirmation quotes with terminal effects`
-```
+```bash
 curl -s https://raw.githubusercontent.com/annthurium/affirmations/refs/heads/main/affirmations.js | sed '1d;$d' | tr -d '",;]' | while IFS= read -r line; do
     echo "$line"
     sleep 1
@@ -84,7 +84,7 @@ The loop prints each affirmation with a 1-second delay.
 ### 2. Track : On the Run
 >  Mode Details : Displays a loading animation with a progress bar
 
-```
+```bash
 while [ $PROGRESS -lt 100 ]; do
     sleep $(awk 'BEGIN{srand(); print 0.1 + rand()*0.9}')
     printf "\r[%-*s] %d%%" "$BAR_LENGTH" "$(head -c $((BAR_LENGTH * PROGRESS / 100)) < /dev/zero | tr '\0' '#')" "$PROGRESS"
@@ -99,7 +99,7 @@ Creates a while loop that runs while ```PROGRESS``` is less than 100%, with a ra
 
 ### 3. Track : Time
 >  Mode Details : Real-Time Clock with Cron Job
-```
+```bash
 if crontab -l | grep -q "$SCRIPT_PATH --play=\"Time\""; then
     echo "Cron job already exists."
 else
@@ -124,7 +124,7 @@ The loop continuously updates and displays the current time.
 ### 4. Track : Money
 >  Mode Details : Displays a "rain" effect of currency symbols in the terminal, similar to cmatrix but with currency symbols ($, €, £, ¥, etc.)
 
-```
+```bash
 symbols=( "$" "€" "£" "¥" "¢" "₹" "₩" "₿" "₣" )
 cols=$(tput cols) 
 
@@ -165,7 +165,7 @@ done
 
 ### 5. Track : Brain Damage
 >  Mode Details : Displays a list of system processes, functioning like a simplified task manager, updating every second
-```
+```bash
  while true; do
         clear
 
@@ -190,7 +190,7 @@ Alternates row colors for better readability.
 #### Here's the result:
 ![Brain Damage](./assets/soal_3/Brain-Damage.png "Brain Damage")
 
-```
+```bash
         *)
             echo "Error."
             ;;
@@ -205,7 +205,7 @@ fi
 
 
 #### Before Revision : Track 5. Brain Damage
-```
+```bash
 while true; do
     echo -e "\e[1;37m=== Brain Damage ===\e[0m"
     echo ""
