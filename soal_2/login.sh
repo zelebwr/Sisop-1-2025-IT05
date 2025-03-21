@@ -21,7 +21,7 @@ while true; do
     if [ -z "$EMAIL" ]; then
         echo -e "\nEmail cannot be empty"
         echo -e "Please enter a valid email.\n"
-    elif ! [[ "$EMAIL" =~ ^[A-Za-z0-9._%+-]+.*\.[a-zA-Z]{2,}$ ]]; then
+    elif ! [[ "$EMAIL" =~ ^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$ ]]; then
         echo -e "\nEmail \"$EMAIL\" is not valid."
         echo -e "Email must contain \'@\' and \'.<domain>\'\n"
         echo -e "Please enter a valid email.\n"
@@ -43,7 +43,7 @@ while true; do
     elif [ ${#PASSWORD} -lt 8 ] || ! [[ "$PASSWORD" =~ [A-Z]+ ]] || ! [[ "$PASSWORD" =~ [a-z]+ ]] || ! [[ "$PASSWORD" =~ [0-9]+ ]]; then
             echo -e "\nPassword must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, and one number."
             echo -e "Please enter a valid password.\n"
-    elif ! grep -q ".*$EMAIL,$PASSWORD" "$DB_PATH_PLYR"; then
+    elif ! grep -q "$EMAIL.*$PASSWORD" "$DB_PATH_PLYR"; then
         echo -e "\nPassword is incorrect."
         echo -e "Please enter a valid password.\n"
     else
@@ -52,7 +52,7 @@ while true; do
 done
 
 # login attempt
-$USERNAME=$(awk -F, -v mail="$EMAIL" -v pass="$PASSWORD" '$1==mail && $3==pass {print $2}' "$DB_PATH_PLYR") 
+USERNAME=$(awk -F, -v mail="$EMAIL" -v pass="$PASSWORD" '$1==mail && $3==pass {print $2}' "$DB_PATH_PLYR") 
 
 if [ -z "$USERNAME" ]; then
     echo -e "\nLogin failed."
