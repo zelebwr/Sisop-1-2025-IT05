@@ -177,6 +177,7 @@ INFO_CHECK=0 # 0 for no info, 1 for info
 SORT_COLUMN=2 # default column to sort based on
 SORT_COLUMN_CHECK=0 # 0 for no column, 1 for column
 SORT_REVERSE=0 # 0 for ascending, 1 for descending
+SORT 
 
 # find default values
 FIND_CHECK=0 # 0 for no find, 1 for find
@@ -400,18 +401,22 @@ while [ $# -gt 0 ]; do
 	esac
 done
 
-# read the dataset 
-if [ $CSV_DIR -eq 0 ]; then
+# read the document
+if [ $CSV_PATH_CHECK -eq 1 ]; then
+	CSV_FILE=$(cat "$2")
+else
 	CSV_FILE=$(curl -s -L "$CSV_LINK")
 fi
 
+# retrieve CSV_HEADER
 CSV_HEADER=$(echo "$CSV_FILE" | head -n 1)
-CSV_TAIL=$(echo "$CSV_FILE" | tail -n +2)
 
-# output archaic message
-archaic_message
+# info the document
+if [ INFO_CHECK -eq 1 ]; then
+	CSV_FILE=$(echo "$CSV_FILE" | sort -t, -nrk$SORT_COLUMN)
 
-if [ $INFO_CHECK -eq 1 ]; then
+	archaic_message
+
 	echo "$CSV_FILE" | awk -F, '
 		NR==1 {for (i=2; i<=NF; i++) header[i-1] = $i; next}
 			{
@@ -429,65 +434,43 @@ if [ $INFO_CHECK -eq 1 ]; then
 		}'
 fi
 
-# sort the dataset
+# sort the document
 if [ $SORT_CHECK -eq 1 ]; then
-	if [ $SORT_ORDER -eq 0 ]; then # ascending
+	if [ $SORT_REVERSE -eq 0 ]; then # ascending
 		CSV_FILE=$(echo "$CSV_FILE" | sort -t, -nk$SORT_COLUMN) 
-	elif [ $SORT_ORDER -eq 1 ]; then # descending
+	elif [ $SORT_REVERSE -eq 1 ]; then # descending
 		CSV_FILE=$(echo "$CSV_FILE" | sort -t, -nrk$SORT_COLUMN)
 	fi
 fi
 
-# find pattern in the dataset
+# find the document
 if [ $FIND_CHECK -eq 1 ]; then
-	if [ $SORT_OUTPUT -eq 1 ]; then
-		SORT_OUTPUT=0 # disable sort output
-	fi
-	if [ $FIND_AMOUNT == "-E" ] || [ $FIND_AMOUNT == "--every" ]; then
-		if [ $OUTPUT_TYPE == "-r" ] || [ $OUTPUT_TYPE == "--row" ]; then
-			CSV_TAIL=$(echo "$CSV_FILE" | awk -F, -v col="$FIND_COLUMN" -v val="$FIND_VALUE" '
-				$col ~ val {
-					print $0;
-				}
-			')
-			echo "$CSV_HEADER"
-			echo "$CSV_TAIL"
-		elif [ $OUTPUT_TYPE == "-f" ] || [ $OUTPUT_TYPE == "--focused" ]; then
-			CSV_TAIL=$(echo "$CSV_TAIL" | awk -F, -v col="$FIND_COLUMN" -v val="$FIND_VALUE" '
-				$col ~ val {
-					print $0;
-				}
-			')
-			echo "$CSV_TAIL" | grep -o "$FIND_VALUE" 
-			echo -n "The amount of occurrences of the focused value is1: "
-			echo "$CSV_TAIL" | grep -o "$FIND_VALUE" | wc -l
-		fi
-	elif [ $OUTPUT_TYPE == "-r" ] || [ $OUTPUT_TYPE == "--row" ]; then
-		CSV_TAIL=$(echo "$CSV_TAIL" | awk -F, -v col="$FIND_COLUMN" -v val="$FIND_VALUE" -v amt="$FIND_AMOUNT" '
-            amt > 0 && $col ~ val {
-                print $0;
-                amt--;
-            }
-        ')
-		echo "$CSV_HEADER"
-		echo "$CSV_TAIL"
-	elif [ $OUTPUT_TYPE == "-f" ] || [ $OUTPUT_TYPE == "--focused" ]; then
-		CSV_TAIL=$(echo "$CSV_TAIL" | awk -F, -v col="$FIND_COLUMN" -v val="$FIND_VALUE" -v amt="$FIND_AMOUNT" '
-            amt > 0 && $col ~ val {
-                print $0;
-                amt--;
-            }
-        ')
-		echo "$CSV_TAIL" | grep -o "$FIND_VALUE" 
-		echo -n "The amount of occurrences of the focused value is2: "
-		echo "$CSV_TAIL" | grep -o "$FIND_VALUE" | wc -l
-	fi
+
+	CSV_TAIL=$(echo "$CSV_FILE" | awk -F, -v col="$FIND_COLUMN" -v val="$FIND_VALUE" '
+        $col ~ val {
+            print $0;
+        }
+    ')
+
+	# check if the value is found
+	if [ -z "$CSV_TAIL" ]; then
+        echo "The string \"$FIND_VALUE\" could not be found in column $FIND_COLUMN."
+        exit 1
+    fi
+
+	 # Continue processing if the string is found
+    if [ $OUTPUT_TYPE == "-r" ] || [ $OUTPUT_TYPE == "--row" ]; then
+        echo "$CSV_HEADER"
+        echo "$CSV_TAIL"
+    elif [ $OUTPUT_TYPE == "-f" ] || [ $OUTPUT_TYPE == "--focused" ]; then
+        echo "$CSV_TAIL" | grep -o "$FIND_VALUE"
+        echo -n "The amount of occurrences of the focused value is: "
+        echo "$CSV_TAIL" | grep -o "$FIND_VALUE" | wc -l
+    fi
 fi
 
-# output the sorted dataset
-if [ $SORT_OUTPUT -eq 1 ]; then
+# output sorted dataset
+if [ $SORT_CHECK -eq 1 && $FIND_CHECK -eq 0 ]; then
 	echo "$CSV_HEADER"
 	echo "$CSV_FILE"
 fi
-
-# don bang
