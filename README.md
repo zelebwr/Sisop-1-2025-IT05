@@ -495,3 +495,11 @@ Color Formatting: white for even rows and light blue for odd rows.
 
 ```clear``` Clears the screen before printing new data.
 > The command was revised from ps aux --sort=-%cpu to top -b -n 1 -o %CPU, extracting processes from line 8 onward (NR>7), with improved formatting using printf and ANSI colors for better readability.
+
+## Soal 4 Pokemon Analysis
+
+### Summary data
+
+Command used : 
+```bash 
+./pokemon_analysis.sh --info
