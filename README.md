@@ -709,11 +709,14 @@ The -nk is for sorting based on string numerical value on what column i.e., the 
 ### Find the name of the pokemon
 
 ```bash 
-./pokeomon_analysis.sh -f Chansey
+./pokemon_analysis.sh -s -c 2 -R -f Thundurus -E 
 ```
 
 Output: 
+
 ![soal_3](assets/soal_4/third.png)
+Running Code in background on line 458: 
+```bash 
 
 Running Code in background on line 458: 
 ```bash 
