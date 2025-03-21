@@ -527,10 +527,282 @@ Color Formatting: white for even rows and light blue for odd rows.
 ```clear``` Clears the screen before printing new data.
 > The command was revised from ps aux --sort=-%cpu to top -b -n 1 -o %CPU, extracting processes from line 8 onward (NR>7), with improved formatting using printf and ANSI colors for better readability.
 
+
 ## Soal 4 Pokemon Analysis
 
-### Summary data
+### Summary data [REVISION]
 
 Command used : 
 ```bash 
-./pokemon_analysis.sh --info
+$ ./pokemon_analysis.sh --info
+```
+
+Output: 
+![soal_1](/assets/soal_4/first.png)
+
+Background command on line 421: 
+```bash
+# info the document
+if [ $INFO_CHECK -eq 1 ]; then
+	archaic_message
+
+    echo "$CSV_FILE" | awk -F, '
+        NR==1 { 
+            for (i=2; i<=NF; i++) header[i] = $i; 
+            next 
+        }
+        {
+            for (i=2; i<=NF; i++) {
+                if ($i+0 > max_val[i]+0) {
+                    max_val[i] = $i;
+                    max_row_value[i] = $1;  # Store corresponding first column value
+                }
+            }
+        }
+        END {
+            for (i=2; i<=NF; i++)
+                if (max_val[i] != "") 
+                    print "The highest value in column " header[i] " is " max_val[i] ", by " max_row_value[i] ".";
+        }'
+fi
+```
+
+Explanation: 
+
+1. 
+
+```bash
+if [ $INFO_CHECK -eq 1 ]; then
+```
+
+The above is to check if user used the info option
+
+2. Archaic message
+
+```bash 
+archaic_message
+```
+
+The above code is just a function that outputs an archaic english message
+
+3.  echo | awk
+
+```bash 
+echo "$CSV_FILE" | awk -F, '
+        NR==1 { 
+            for (i=2; i<=NF; i++) header[i] = $i; 
+            next 
+        }
+        {
+            for (i=2; i<=NF; i++) {
+                if ($i+0 > max_val[i]+0) {
+                    max_val[i] = $i;
+                    max_row_value[i] = $1;  # Store corresponding first column value
+                }
+            }
+        }
+        END {
+            for (i=2; i<=NF; i++)
+                if (max_val[i] != "") 
+                    print "The highest value in column " header[i] " is " max_val[i] ", by " max_row_value[i] ".";
+        }'
+```
+
+`echo` command is used to pipe the csv_file data  into the `awk` command
+
+```bash 
+ awk -F, 'NR==1 { 
+            for (i=2; i<=NF; i++) header[i] = $i; 
+            next 
+        }
+        {
+            for (i=2; i<=NF; i++) {
+                if ($i+0 > max_val[i]+0) {
+                    max_val[i] = $i;
+                    max_row_value[i] = $1;  # Store corresponding first column value
+                }
+            }
+        }
+        END {
+            for (i=2; i<=NF; i++)
+                if (max_val[i] != "") 
+                    print "The highest value in column " header[i] " is " max_val[i] ", by " max_row_value[i] ".";
+        }'
+```
+
+The awk here is for declaring CSV header into the header array in awk, then looping through all of the rows starting from the second column to get the maximum values from each of the column. 
+
+Using `max_val[i]+0` it will automatically not take string values. 
+
+The loop will get the first column value (pokemon name) with the highest value of the designated column, so the output can tell which pokemon it was with for what column and with the the highest value of the said column. 
+
+### Sort the Pokemon based on a Column [REVISION]
+
+Used command: 
+
+```bash 
+./pokemon_analysis.sh -s -c 1 -R
+``` 
+
+Output: 
+
+![soal_2_1}](assets/soal_4/second_1.png)
+
+Alternative command: 
+
+```bash 
+./pokemon_analysis.sh -s -c 2 -R
+```
+
+Output: 
+
+![soal_2_2](assets/soal_4/second_2.png)
+
+Background command to run on line 448: 
+
+```bash
+# sort the document
+if [[ $SORT_CHECK -eq 1 ]]; then
+	if [[ $SORT_REVERSE -eq 0 ]]; then # ascending
+		CSV_FILE=$(echo "$CSV_FILE" | sort -t, -nk$SORT_COLUMN) 
+	elif [[ $SORT_REVERSE -eq 1 ]]; then # descending
+		CSV_FILE=$(echo "$CSV_FILE" | sort -t, -nrk$SORT_COLUMN)
+	fi
+fi
+```
+
+Explanation: 
+
+1. if condition 
+
+```bash 
+if [[ $SORT_CHECK -eq 1 ]]; then
+```
+
+The command above checks if the user wanted to sort the data from the csv file or not
+
+2. another if condition
+
+```bash 
+if [[ $SORT_REVERSE -eq 0 ]]; then # ascending
+... 
+elif [[ $SORT_REVERSE -eq 1 ]]; then # descending
+...
+```
+
+The command above checks if the user wanted to sort in an ascending order or descneding order
+
+3. The main command
+
+```bash 
+CSV_FILE=$(echo "$CSV_FILE" | sort -t, -nk$SORT_COLUMN) 
+```  
+
+The command above is the main command to do the sorting
+
+`echo` is the command to pipe in the data form the csv_file into sort `sort` command
+
+The -t flag in `sort` is for declaring the delimiter, which is `,` in this context
+
+The -nk is for sorting based on string numerical value on what column i.e., the `$SORT_COLUMN`
+
+### Find the name of the pokemon
+
+```bash 
+./pokeomon_analysis.sh -f Chansey
+```
+
+Output: 
+![soal_3](assets/soal_4/third.png)
+
+Running Code in background on line 458: 
+```bash 
+# find the document
+if [[ $FIND_CHECK -eq 1 ]]; then
+
+	if [[ "$USE_SECOND_COLUMN" -eq 1 ]]; then
+        CSV_TAIL=$(echo "$CSV_FILE" | awk -F, -v col1="$FIND_COLUMN1" -v col2="$FIND_COLUMN2" -v val="$FIND_VALUE" '
+            $col1 ~ val || $col2 ~ val { print $0 }
+        ')
+    else
+        CSV_TAIL=$(echo "$CSV_FILE" | awk -F, -v col1="$FIND_COLUMN1" -v val="$FIND_VALUE" '
+            $col1 ~ val { print $0 }
+        ')
+    fi
+
+	# check if the value is found
+	if [[ -z "$CSV_TAIL" ]]; then
+        echo "The string \"$FIND_VALUE\" could not be found in column $FIND_COLUMN."
+        exit 1
+    fi
+
+	 # Continue processing if the string is found
+    if [[ $OUTPUT_TYPE == "-r" ]] || [[ $OUTPUT_TYPE == "--row" ]]; then
+        echo "$CSV_HEADER"
+        echo "$CSV_TAIL"
+    elif [[ $OUTPUT_TYPE == "-f" ]] || [[ $OUTPUT_TYPE == "--focused" ]]; then
+        echo "$CSV_TAIL" | grep -o "$FIND_VALUE"
+        echo -n "The amount of occurrences of the focused value is: "
+        echo "$CSV_TAIL" | grep -o "$FIND_VALUE" | wc -l
+    fi
+fi
+```
+
+Explanation
+
+1. A bunch of if conditions: 
+
+```bash
+if [[ $FIND_CHECK -eq 1 ]]; then
+```
+
+The command above to check if user wanted to find a pattern or some sort
+
+```bash
+if [[ "$USE_SECOND_COLUMN" -eq 1 ]]; then
+```
+
+The command above to check if user wanted to find pattern at 2 columns
+
+
+```bash
+if [[ -z "$CSV_TAIL" ]]; then
+```
+
+The command above checks out if the searched pattern is there or not
+
+
+```bash
+if [[ $OUTPUT_TYPE == "-r" ]] || [[ $OUTPUT_TYPE == "--row" ]]; then
+```
+
+The command above to check if the user wanted output based on row
+
+
+```bash
+elif [[ $OUTPUT_TYPE == "-f" ]] || [[ $OUTPUT_TYPE == "--focused" ]]; then
+```
+
+The command above to check if the user wanted output based on just the value 
+
+
+```bash
+CSV_TAIL=$(echo "$CSV_FILE" | awk -F, -v col1="$FIND_COLUMN1" -v col2="$FIND_COLUMN2" -v val="$FIND_VALUE" '
+```
+
+```bash
+CSV_TAIL=$(echo "$CSV_FILE" | awk -F, -v col1="$FIND_COLUMN1" -v val="$FIND_VALUE" '
+```
+
+```bash
+
+```
+
+```bash
+
+```
+
+```bash
+
+```
+
