@@ -77,7 +77,7 @@ done
 ```
 Fetches data from the Affirmations API and removes the first and last lines and unnecessary characters from the API response 
 #### Here's the result:
-![Speak to Me](./assets/Speak-to-Me.png "Speak to Me")
+![Speak to Me](./assets/soal_3/Speak-to-Me.png "Speak to Me")
 
 
 The loop prints each affirmation with a 1-second delay.
