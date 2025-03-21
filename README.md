@@ -254,7 +254,7 @@ echo "$EMAIL,$USERNAME,$PASSWORD" >> $DB_PATH_PLYR
 ```
 
 ---
-
+![sign in](./assets/soal_2/sign-in-regist.jpeg "sign in")
 ### Terminal Interface (`terminal.sh`)
 
 This script provides a menu for user interaction:
@@ -298,7 +298,7 @@ EOF
     read
 done
 ```
-
+![terminal](./assets/soal_2/home-terminal.jpeg "terminal")
 ### Soal 3 - CLI UI/UX Gacor
 #### dsotm.sh
 
