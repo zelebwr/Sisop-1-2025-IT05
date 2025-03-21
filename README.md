@@ -39,9 +39,6 @@ $ chmod -R +x .
 
 ### Soal 4 – Main Pokemon Malah Pusing Sendiri
 
-#### Declare Shell Environment
-
-
 ### dsotm.sh
 
 > dsotm.sh is a Bash script containing five tracks from The Dark Side of the Moon, each producing different terminal outputs. When executed, the script first clears the terminal to ensure that its effects are displayed correctly without interference.
