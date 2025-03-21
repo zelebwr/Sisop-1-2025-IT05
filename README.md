@@ -46,7 +46,9 @@ $ chmod -R +x .
 
 > dsotm.sh is a Bash script containing five tracks from The Dark Side of the Moon, each producing different terminal outputs. When executed, the script first clears the terminal to ensure that its effects are displayed correctly without interference.
 >  The script must be run using the following format:
-```./dsotm.sh --play=”<Track>"``` 
+```
+./dsotm.sh --play=”<Track>"
+ ``` 
 
 > where **<Track>** represents one of the selected song names. This is required for the script to function properly.
 
@@ -213,10 +215,18 @@ Color Formatting: white for even rows and light blue for odd rows.
 ```sleep 1``` Refreshes the display every second.
 
 ```clear``` Clears the screen before printing new data.
+done
+	;;
+```
+        *)
+            echo "Error."
+            ;;
+    esac
+else
+	echo "Use: ./dsotm.sh --play=\"Song Name\""
+fi
+```
+```echo "Error." ``` Displays an error message if the input is invalid. 
 
-Here's the result:
-
-"picture" 
-
-dkk dan selanjutnya, semangat semua
+```echo "Use: ./dsotm.sh --play=\"Song Name\""```  Provides the correct usage instructions to the user.If the initial condition is not met (invalid argument).
 
