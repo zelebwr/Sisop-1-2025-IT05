@@ -318,12 +318,14 @@ in login.sh
 ```bash
 elif ! grep -q ".*$EMAIL,$PASSWORD" "$DB_PATH_PLYR"; then
 ```
+It prevents invalid email formats from being checked against the database.
 
 and
 
 ```bash
 $USERNAME=$(awk -F, -v mail="$EMAIL" -v pass="$PASSWORD" '$1==mail && $3==pass {print $2}' "$DB_PATH_PLYR")
 ```
+It will causes an error because $USERNAME is being treated as a command instead of a variable assignment.
 
 ### Soal 3 - CLI UI/UX Gacor
 #### dsotm.sh
