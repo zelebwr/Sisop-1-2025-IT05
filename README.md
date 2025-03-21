@@ -207,7 +207,9 @@ fi
 ```
 
 ---
+#### Here's the result:
 ![login](./assets/soal_2/login.jpeg "login")
+
 ### Register Script (`register.sh`)
 
 The script begins by setting up the database file if it doesn't exist:
@@ -263,7 +265,9 @@ echo "$EMAIL,$USERNAME,$PASSWORD" >> $DB_PATH_PLYR
 ```
 
 ---
+#### Here's the result:
 ![sign in](./assets/soal_2/sign-in-regist.jpeg "sign in")
+
 ### Terminal Interface (`terminal.sh`)
 
 This script provides a menu for user interaction:
@@ -307,9 +311,11 @@ EOF
     read
 done
 ```
+#### Here's the result:
 ![terminal](./assets/soal_2/home-terminal.jpeg "terminal")
 
 exit program
+#### Here's the result:
 ![back](./assets/soal_2/back.jpeg "back")
 
 #### Before revision: 
