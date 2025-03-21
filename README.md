@@ -311,6 +311,20 @@ done
 
 exit program
 ![back](./assets/soal_2/back.jpeg "back")
+
+####Before revision: 
+in login.sh
+
+```bash
+elif ! grep -q ".*$EMAIL,$PASSWORD" "$DB_PATH_PLYR"; then
+```
+
+and
+
+```bash
+$USERNAME=$(awk -F, -v mail="$EMAIL" -v pass="$PASSWORD" '$1==mail && $3==pass {print $2}' "$DB_PATH_PLYR")
+```
+
 ### Soal 3 - CLI UI/UX Gacor
 #### dsotm.sh
 
