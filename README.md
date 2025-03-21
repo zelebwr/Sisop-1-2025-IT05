@@ -62,7 +62,7 @@ You also have to collect their choice, use ↓↓↓
 read -p "Masukkan Menu Pilihanmu : " menu
 ```
 #### Here's the result:
-![menu](./assets/soal_1/menu.png "menu")
+![menu](./assets/soal_1/menu.jpeg "menu")
 
 
 Now we're moving to the challenges they'll face!
