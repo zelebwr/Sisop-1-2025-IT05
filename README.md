@@ -79,6 +79,8 @@ curl -s https://raw.githubusercontent.com/annthurium/affirmations/refs/heads/mai
 done
 ```
 Fetches data from the Affirmations API and removes the first and last lines and unnecessary characters from the API response 
+#### Here's the result:
+
 The loop prints each affirmation with a 1-second delay.
 
 ### 2. Track : On the Run
@@ -94,6 +96,7 @@ done
 ```
 Creates a while loop that runs while ```PROGRESS``` is less than 100%, with a random delay between 0.1 and 1 second. Each progress step is updated with a random value, ensuring the progress bar reaches exactly 100% at the end.
 ```printf``` is used to display a progress bar.
+#### Here's the result:
 
 ### 3. Track : Time
 >  Mode Details : Real-Time Clock with Cron Job
@@ -116,6 +119,7 @@ Checks if a cron job for the script already exists.
  If not, it adds a new cron job to run every minute.
 
 The loop continuously updates and displays the current time.
+#### Here's the result:
 
 ### 4. Track : Money
 >  Mode Details : Displays a "rain" effect of currency symbols in the terminal, similar to cmatrix but with currency symbols ($, €, £, ¥, etc.)
@@ -156,6 +160,7 @@ done
 ```while true; do``` Infinite loop for continuously displaying symbol, then Randomly decides whether to show a symbol in a column. Also Randomly assigns purple (35) or white (37) color.
 
 ```sleep 0.1``` Slows down the effect for a smoother animation
+#### Here's the result:
 
 ### 5. Track : Brain Damage
 >  Mode Details : Displays a list of system processes, functioning like a simplified task manager, updating every second
@@ -181,8 +186,23 @@ Clears the terminal before each update.
 Displays a formatted table with PID, USER, Priority, CPU%, MEM%, and Command.
 Updates every second to reflect live system changes.
 Alternates row colors for better readability.
+#### Here's the result:
 
-#### Before Revision
+```
+        *)
+            echo "Error."
+            ;;
+    esac
+else
+	echo "Use: ./dsotm.sh --play=\"Song Name\""
+fi
+```
+```echo "Error." ``` Displays an error message if the input is invalid. 
+
+```echo "Use: ./dsotm.sh --play=\"Song Name\""```  Provides the correct usage instructions to the user.If the initial condition is not met (invalid argument).
+
+
+#### Before Revision : Track 5. Brain Damage
 ```
 while true; do
     echo -e "\e[1;37m=== Brain Damage ===\e[0m"
@@ -198,6 +218,7 @@ while true; do
     sleep 1
     clear
 done
+	;;
 ```
 ```while true; do``` Infinite loop for continuously updating the process list.
   Retrieves the top 10 CPU-intensive processes.
@@ -207,18 +228,5 @@ Color Formatting: white for even rows and light blue for odd rows.
 ```sleep 1``` Refreshes the display every second.
 
 ```clear``` Clears the screen before printing new data.
-done
-	;;
-```
-        *)
-            echo "Error."
-            ;;
-    esac
-else
-	echo "Use: ./dsotm.sh --play=\"Song Name\""
-fi
-```
-```echo "Error." ``` Displays an error message if the input is invalid. 
-
-```echo "Use: ./dsotm.sh --play=\"Song Name\""```  Provides the correct usage instructions to the user.If the initial condition is not met (invalid argument).
+> The command was revised from ps aux --sort=-%cpu to top -b -n 1 -o %CPU, extracting processes from line 8 onward (NR>7), with improved formatting using printf and ANSI colors for better readability.
 
