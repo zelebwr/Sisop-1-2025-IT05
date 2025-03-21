@@ -102,40 +102,26 @@ help_menu() {
     cat << EOF
 
 
-Usage: $0 [OPTION] ...
+Usage: $0 [OPTIONS] ... [FILE]
 
 Options:
-  Help: $0 --help
-    -h, --help              Show this help menu for commands.
+  -h, --help              Show this help menu.
 
-  Direct: $0 --direct [URL] || [DIR]
-          e.g. $0 -d https://example.com/file.csv -s -c 2 -R
-          e.g. $0 -d /home/user/file.csv -f Pikachu -c 2 -A 10 -o -r
-    -d, --direct [URL] || [DIR]
-                            Read a CSV File from the given URL. 
-                            By default uses the pokemon dataset.
-  Info: $0 --info
-    -i, --info              Display a summary of information about the dataset.
-  
-  Sort: $0 --sort -c [NUM] -R
-        e.g. $0 -s -c 2 -R
-    -s, --sort              Sort the dataset.
-        -c, --column [NUM]  Sort by the specified column number.
-        -R, --reverse       Sort in reverse order.
-  
-  Find: $0 --find [STR] -c [NUM] -A [NUM] -o [TYPE]
-        e.g. $0 -f Pikachu -c 2 -A 10 -o -r
-    -f, --find [STR]        Search for values in a specific column.
-                            By default, searches every column and outputs only 10 results. 
-                            of the matching pattern.
-        -c, --column [NUM]  Choose the column to search.
-        -A, --amount [NUM]  Limit the number of results.
-		-E, --every         Output every match.
-        -o, --output        Specify output format:
-            -r, --row       Output entire row containing the match.
-            -f, --focused   Output only the exact match.
-    -e, --easter-egg        Display an easter egg message.
-                            Please try me :(
+  -d, --direct [URL|DIR]  Load a CSV file from the given URL or directory.
+  -i, --info              Display dataset summary.
+
+  -s, --sort              Sort dataset.
+      -c, --column [NUM]  Column to sort by.
+      -R, --reverse       Sort in descending order.
+
+  -f, --find [VALUE]      Search for a specific value.
+      -c, --column [NUM]  Column to search.
+      -A, --amount [NUM]  Limit the number of results.
+      -E, --every         Output every matching row.
+      -o, --output [TYPE] Output format: -r (--row), -f (--focused).
+
+  -egg, --easter-egg        Show an easter egg message.
+
 EOF
 }
 
@@ -177,6 +163,29 @@ is_integer() {
     [[ "$s" =~ ^[0-9]+$ ]]
 }
 
+# default values
+COMMAND=""
+
+# CSV default values
+CSV_LINK="https://drive.google.com/uc?id=1n-2n_ZOTMleqa8qZ2nB8ALAbGFyN4-LJ&export=download"
+CSV_PATH_CHECK=0 # 0 for default direct, 1 for added direct
+
+# info default values
+INFO_CHECK=0 # 0 for no info, 1 for info
+
+# sort default values
+SORT_COLUMN=2 # default column to sort based on
+SORT_COLUMN_CHECK=0 # 0 for no column, 1 for column
+SORT_REVERSE=0 # 0 for ascending, 1 for descending
+
+# find default values
+FIND_CHECK=0 # 0 for no find, 1 for find
+FIND_VALUE=""
+FIND_COLUMN=1 # default column to find based on
+FIND_AMOUNT=10 # default amount to output
+OUTPUT_TYPE="-r" # default output type
+FIND_EVERY=0 # 0 for no every, 1 for every
+
 # argument parsing
 while [ $# -gt 0 ]; do
 	case "$1" in 
@@ -185,6 +194,7 @@ while [ $# -gt 0 ]; do
 
 		# main: DIRECT
 		-d|--direct)
+			COMMAND+="Acquisition "
 			# check if the next argument is empty or starts with '-'
 			if [[ -z "$2" || "$2" =~ ^- ]]; then 
 				echo "The next argument cant't be empty or starts with '-'."
@@ -192,56 +202,99 @@ while [ $# -gt 0 ]; do
 				echo "Try: --direct /home/user/file.csv"
 				echo "Try using -h or --help for help."
 				exit 1;
-			# else 
-			# check if it's a link or not
-				# check if it's a valid link or not
-					# check if it's a csv file or not
-						# fetch data
-						# check if it's successful or not
-				# else 
-				# check if it's a valid path or not
-					# check if it's a csv file or not
-						# fetch data
-						# check if it's successful or not
-					# else
-				# else
+			else
+			# check if it's a link or path 
+			if [[ "$2" =~ ^https?:// ]]; then 
+				if curl --output /dev/null --silent --head --fail "$2"; then
+					CSV_FILE=$(curl -s -L"$2")
+					if echo "$CSV_FILE" | head -n 1 | grep -q ','; then
+						echo "The requested data hath been procured with utmost success!"
+						CSV_LINK="$2"
+						shift 2
+					else 
+						echo "Data: $2"
+						echo "The data, alas, falls short of the mark, and doth not meet the prescribed standards. See to it that it be rendered in the form of a comma-separated scroll, as is required!"
+						echo -e "\nData is not in CSV format."
+						echo "Please add a URL that contains a CSV file."
+						exit 1
+					fi
+				else
+					echo "Data: $2"
+					echo "The data, I regret to report, is wanting in its retrieval. I entreat you, make another effort. If circumstances allow, explore the use of a distinct pathway to its acquisition."
+					echo -e "\n Data has failed to be retrieved"
+					echo "Please check the URL and try again."
+					exit 1
+				fi
+			else
+				if [ -e "$2"]; then 
+					if [[ "$2" == *.csv ]]; then
+						echo "Data: $2"
+						echo "The requested data hath been procured with utmost success!"
+						CSV_PATH_CHECK=1 # added direct
+						shift 2
+					else 
+						echo "Data: $2"
+						echo "The data, alas, falls short of the mark, and doth not meet the prescribed standards. See to it that it be rendered in the form of a comma-separated scroll, as is required!"
+						echo -e "\nData is not in CSV format."
+						echo "Please add a path directing to a CSV file."
+						exit 1
+					fi 
+				else 
+					echo "Data: $2"
+					echo "The data, I regret to report, is wanting in its retrieval. I entreat you, make another effort. If circumstances allow, explore the use of a distinct pathway to its acquisition."
+					echo -e "\n Data has failed to be retrieved"
+					echo "Please check the path and try again."
+					exit 1
+				fi
 			fi
 			;;
 		
 		# main: INFO
 		-i|--info)
-			# sort the table
-			# display the highest value of each column
-			exit 0
+			COMMAND += "Erudition "
+			INFO_CHECK=1
+			break
 			;;
 		
 		# main: SORT
 		-s|--sort)
+			COMMAND+="Disposition "
 			# sort the able
 			shift
 			while [ $# -gt 0 ]; do 
 				case "$1" in
+
 					# sub SORT: COLUMN
 					-c|--column)
 						# check if the next argument is empty or starts with '-'
 						if [[ -z "$2" || "$2" =~ ^- ]]; then 
-							echo "The next argument cant't be empty or starts with '-'."
+							echo -e "The \"$2\" cant't be empty or starts with '-'."
 							echo "Try: -c 2; to refer to sort based on column 2"
 							echo "Try using -h or --help for help."
 							exit 1;
-						# else
-						# check if it's an integer or not and if it's less than 0 or not
-							# check if it's a valid column or not
-								# sort the table
-							# else
-						# else
+						else
+							# check if it's an integer or not
+							if [[ "$2" =~ ^[0-9]+$ ]]; then
+								SORT_COLUMN=$2
+								SORT_COLUMN_CHECK=1
+								shift 2
+							else 
+								echo -e "The \"$2\" argument must be an integer."
+								echo "Try: -c 2; to refer to sort based on column 2"
+								echo "Try using -h or --help for help."
+								exit 1;
+							fi
+						fi
+						;;
+					
+					# sub SORT: REVERSE
+					-R|--reverse)
+						COMMAND+="Inversion "
+						shift
 						fi
 						;;
 
-					# sub SORT: REVERSE
-					-R|--reverse)
-						# sort the table in reverse order
-						;;
+					# sub SORT: EXIT
 					*) break;; 
 				esac
 			done
@@ -249,334 +302,101 @@ while [ $# -gt 0 ]; do
 
 		# main: FIND
 		-f|--find)
+			COMMAND+="Inquisition "
+			FIND_CHECK=1 # 1 for find
 			# check if the next argument is empty or starts with '-'
 			if [[ -z "$2" || "$2" =~ ^- ]]; then
-				echo "The next argument cant't be empty or starts with '-'."
+				echo -e "The "$2" argument cant't be empty or starts with '-'."
 				echo "Try: -f Pikachu; to search for Pikachu"
 				echo "Try using -h or --help for help."
+			else
+				FIND_VALUE="$2" # find value
 				while [ $# -gt 0 ]; do
 					case "$1" in
-						# sub FIND: COLUMN
+						
+						# sub SORT: COLUMN
 						-c|--column)
 							# check if the next argument is empty or starts with '-'
 							if [[ -z "$2" || "$2" =~ ^- ]]; then 
-								echo "The next argument cant't be empty or starts with '-'."
-								echo "Try: -c 2; to refer to search based on column 2"
+								echo -e "The \"$2\" cant't be empty or starts with '-'."
+								echo "Try: -c 2; to refer to sort based on column 2"
 								echo "Try using -h or --help for help."
 								exit 1;
-							# else
-							# check if it's an integer or not and if it's less than 0 or not
-								# check if it's a valid column or not
-									# check if it's a valid string or not
-										# check if it's a valid amount or not
-											# check if it's a valid output type or not
-												# find the string
-												# display the output
-											# else
-										# else
-									# else
+							else
+								# check if it's an integer or not
+								if [[ "$2" =~ ^[0-9]+$ ]]; then
+									SORT_COLUMN=$2
+									SORT_COLUMN_CHECK=1
+									shift 2
+								else 
+									echo -e "The \"$2\" argument must be an integer."
+									echo "Try: -c 2; to refer to sort based on column 2"
+									echo "Try using -h or --help for help."
+									exit 1;
 								fi
-								;;
+							fi
+							;;
 
 						# sub FIND: AMOUNT
 						-A|--amount)
 							# check if the next argument is empty or starts with '-'
 							if [[ -z "$2" || "$2" =~ ^- ]]; then 
-								echo "The next argument cant't be empty or starts with '-'."
-								echo "Try: -A 10; to output 10 results from the search"
+								echo -e "The \"$2\" argument cant't be empty or starts with '-'."
+								echo "Try: -A 10; to output top 10 results from the search"
 								echo "Try using -h or --help for help."
 								exit 1;
-							# else
-							# check if it's an integer or not and if it's less than 0 or not
-								# check if it's a valid amount or not
-									# check if it's a valid output type or not
-										# find the string
-										# display the output
-									# else
-								# else
-							# else
+							else
+								if [[ "$2" =~ ^[0-9]+$ ]]; then
+									FIND_AMOUNT=$2
+									shift 2
+								else 
+									echo -e "The \"$2\" argument must be an integer."
+									echo "Try: -A 10; to output top 10 results from the search"
+									echo "Try using -h or --help for help."
+									exit 1;
+								fi
 							fi
 							;;
 						
 						# sub FIND: EVERY
 						-E|--every)
-							# check if it's a valid string or not
-								# check if it's a valid amount or not
-									# check if it's a valid output type or not
-										# find the string
-										# display the output
-									# else
-								# else
-							# else
+							FIND_EVERY=1 # 1 for every
+							shift
 							;;
 
 						# sub FIND: OUTPUT
 						-o|--output)
 							# check if the next argument is empty or starts with '-'
-							if [[ -z "$2" || "$2" =~ ^- ]]; then 
-								echo "The next argument cant't be empty or starts with '-'."
-								echo "Try: -o -r; to refer to search based on row"
-								echo "Try
-				
-				# check if it's a valid column or not
-					# check if it's a valid amount or not
-						# check if it's a valid output type or not
-							# find the string
-							# display the output
-						# else
-					# else
-				# else
-
+							if [[ -z "$2" ]]; then 
+								echo "The next argument cant't be empty."
+								echo "Try: -o -r; to output the results per row"
+								echo "Try using -h or --help for help."
+							else 
+								if [[ "$2" == "-r" || "$2" == "--row" || "$2" == "-f" || "$2" == "--focused" ]]; then
+									OUTPUT_TYPE="$2"
+									shift 2
+								else 
+									echo "The \"$2\" argument must be -r or --row or -f or --focused."
+									echo "Try: -o -r; to output the results per row"
+									echo "Try using -h or --help for help."
+									exit 1;
+								fi
+							fi
+							;;
+						
+						# sub FIND: EXIT
+						*) break;;
+					esac
+				done
 			fi
 			;;
 
-
-
-while [ $# -gt 0 ]; do
-	case $1 in
-		-h|--help)
-			help_menu
+		-egg|--easter-egg)
+			easter_egg
 			exit 0
 			;;
-		-d|--direct)
-			if [ -e "$2" ]; then
-				if csv_dir_check "$2"; then
-					CSV_FILE=$(cat "$2")
-					shift 2
-				else
-					error_csv
-					exit 1
-				fi
-			else 
-				if valid_url "$2"; then # still can't be used
-					if csv_link_check "$2"; then
-						CSV_LINK="$2"
-					else 
-						error_csv
-						exit 1
-					fi
-				else 
-					error_direct
-					exit 1
-				fi
-			fi
-			;;
-		-i|--info)
-			COMMAND+="Erudition "
-			INFO_CHECK=1
-			break
-			;;
-		-s|--sort)
-			COMMAND+="Dispoition "
-			SORT_CHECK=1
-			SORT_OUTPUT=1
-			case $2 in
-				-c|--column)
-					if ! is_integer "$3" || [ "$3" -le 0 ]; then
-						error_column
-						exit 1
-					fi
-					SORT_COLUMN=$3
-					if [ $4 == "-R" ] || [ $4 == "--reverse" ]; then
-						SORT_ORDER=1 # descending
-						shift 4
-					else 
-						shift 3
-					fi
-					;;
-				-R|--reverse)
-					SORT_ORDER=1
-					if [ $3 == "-c" ] || [ $3 == "--column" ]; then
-						if ! is_integer "$4" || [ "$4" -le 0 ]; then
-							error_column
-							exit 1
-						fi
-						SORT_COLUMN=$4
-						shift 4
-					else 
-						shift 2
-					fi
-					;;
-				*)
-					shift
-					;;
-			esac
-			;;
-		-f|--find)
-			if [ -z "$2" ]; then
-				error_find
-				exit 1
-			fi
-			FIND_CHECK=1
-			FIND_VALUE=$2
-			COMMAND+="Inquisition "
-			case $3 in
-				-c|--column)
-					if ! is_integer "$4" || [ "$4" -le 0 ]; then
-						error_column
-						exit 1
-					fi
-					FIND_COLUMN=$4
-					case $5 in
-						-A|--amount)
-							if ! is_integer "$4" || [ "$4" -le 0 ] || [ "$4" == "-E" ] || [ "$4" == "--every" ]; then
-								error_amount
-								exit 1
-							fi
-							FIND_AMOUNT=$6
-							if [ $7 == "-o" ] || [ $7 == "--output" ]; then
-								if [ $8 == "-r" ] || [ $8 == "--row" ] ||  [ $8 == "-f" ] || [ $8 == "--focused" ]; then
-									OUTPUT_TYPE=$8
-									shift 8
-								else
-									echo "Invalid argument: $8"
-									error_output
-									exit 1
-								fi
-							else
-								shift 6
-							fi
-							;;
-						-o|--output)
-							if [ $6 == "-r" ] || [ $6 == "--row" ] ||  [ $6 == "-f" ] || [ $6 == "--focused" ]; then
-								OUTPUT_TYPE=$6
-								if [ $7 == "-A" ] || [ $7 == "--amount" ]; then
-									if ! is_integer "$4" || [ "$4" -le 0 ] || [ "$4" == "-E" ] || [ "$4" == "--every" ]; then
-										error_amount
-										exit 1
-									fi
-									FIND_AMOUNT=$8
-									shift 8
-								else
-									shift 6
-								fi
-							else
-								echo "Invalid argument: $6"
-								error_output
-								exit 1
-							fi
-							;;
-						*)
-							shift 4
-							;;
-					esac
-					;;
-				-A|--amount)
-					if ! is_integer "$4" || [ "$4" -le 0 ] || [ "$4" == "-E" ] || [ "$4" == "--every" ]; then
-						error_amount
-						exit 1
-					fi
-					FIND_AMOUNT=$4
-					case $5 in
-						-o|--output)
-							if [ $6 == "-r" ] || [ $6 == "--row" ] ||  [ $6 == "-f" ] || [ $6 == "--focused" ]; then
-								OUTPUT_TYPE=$6
-								if [ $7 == "-c" ] || [ $7 == "--column" ]; then
-									if ! is_integer "$8" || [ "$8" -le 0 ]; then
-										error_column
-										exit 1
-									fi
-									FIND_COLUMN=$8
-									shift 8
-								else
-									shift 6
-								fi
-							else
-								echo "Invalid argument: $6"
-								error_output
-								exit 1
-							fi
-							;;
-						-c|--column)
-							if ! is_integer "$6" || [ "$6" -le 0 ]; then
-								error_column
-								exit 1
-							fi
-							FIND_COLUMN=$6
-							if [ $7 == "-o" ] || [ $7 == "--output" ]; then
-								if [ $8 == "-r" ] || [ $8 == "--row" ] ||  [ $8 == "-f" ] || [ $8 == "--focused" ]; then
-									OUTPUT_TYPE=$8
-									shift 8
-								else
-									echo "Invalid argument: $8"
-									error_output
-									exit 1
-								fi
-							else
-								shift 6
-							fi
-							;;
-						*)
-							shift 4
-							;;
-					esac
-					;;
-				-o|--output)
-					if [ $4 == "-r" ] || [ $4 == "--row" ] ||  [ $4 == "-f" ] || [ $4 == "--focused" ]; then
-						OUTPUT_TYPE=$4
-						case $5 in
-							-c|--column)
-								if ! is_integer "$6" || [ "$6" -le 0 ]; then
-									error_column
-									exit 1
-								fi
-								FIND_COLUMN=$6
-								if [ $7 == "-A" ] || [ $7 == "--amount" ]; then
-									if ! is_integer "$4" || [ "$4" -le 0 ] || [ "$4" == "-E" ] || [ "$4" == "--every" ]; then
-										error_amount
-										exit 1
-									fi
-									FIND_AMOUNT=$8
-									shift 8
-								else
-									shift 6
-								fi
-								;;
-							-A|--amount)
-								if ! is_integer "$4" || [ "$4" -le 0 ] || [ "$4" == "-E" ] || [ "$4" == "--every" ]; then
-									error_amount
-									exit 1
-								fi
-								FIND_AMOUNT=$6
-								if [ $7 == "-c" ] || [ $7 == "--column" ]; then
-									if ! is_integer "$8" || [ "$8" -le 0 ]; then
-										error_column
-										exit 1
-									fi
-									FIND_COLUMN=$8
-									shift 8
-								else
-									shift 6
-								fi
-								;;
-							*)
-								shift 4
-								;;
-						esac
-					else
-						echo "Invalid argument: $4"
-						error_output
-						exit 1
-					fi
-					;;
-				*)
-					shift 2
-					;;
-			esac
-			;;
-		-e|--easter-egg)
-			easter_egg # please try me :(
-			shift
-			;;
-		*)
-			echo "Invalid argument: $1"
-			echo "Pray, what manner of contraption is this?"
-			echo "I must confess, I find myself somewhat perplexed."
-			echo "Could it be that your vision is, perchance, somewhat obscured?"
-			echo "For, if I recall correctly, I did impart a most clear and unambiguous instruction."
-			echo "Surely, it was not so easily forgotten?"
-			exit 1
-			;;
+
+		*) break;; 
 	esac
 done
 
