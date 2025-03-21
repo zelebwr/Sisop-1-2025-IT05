@@ -62,7 +62,7 @@ You also have to collect their choice, use ↓↓↓
 read -p "Masukkan Menu Pilihanmu : " menu
 ```
 #### Here's the result:
-![Menu](./assets/soal_1/menu.png "Menu")
+![menu](./assets/soal_1/menu.png "menu")
 
 
 Now we're moving to the challenges they'll face!
@@ -78,7 +78,7 @@ END {printf "Chris Hemsworth membaca %d buku.\n", count}
 ```
 > Using if feature, adjusting Poppo&Siroyo needs. Try to show the data and filter Chris's name.
 #### Here's the result:
-![no1](./assets/soal_1/no1 "no1")
+![no1](./assets/soal_1/no1.jpeg "no1")
 
 2. Siroyo, always the analyst, wants to know how long people read using the magic tablet. Let's build a system that fetches and processes the data to reveal the answer.
    
