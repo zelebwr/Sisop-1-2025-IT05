@@ -96,7 +96,7 @@ done
 Creates a while loop that runs while ```PROGRESS``` is less than 100%, with a random delay between 0.1 and 1 second. Each progress step is updated with a random value, ensuring the progress bar reaches exactly 100% at the end.
 ```printf``` is used to display a progress bar.
 #### Here's the result:
-![On the Run](./assets/On-the-Run.png "On the Run")
+![On the Run](./assets/soal_3/On-the-Run.png "On the Run")
 
 ### 3. Track : Time
 >  Mode Details : Real-Time Clock with Cron Job
@@ -120,7 +120,7 @@ Checks if a cron job for the script already exists.
 
 The loop continuously updates and displays the current time.
 #### Here's the result:
-![Time](./assets/Time.png "Time")
+![Time](./assets/soal_3/Time.png "Time")
 ### 4. Track : Money
 >  Mode Details : Displays a "rain" effect of currency symbols in the terminal, similar to cmatrix but with currency symbols ($, €, £, ¥, etc.)
 
@@ -161,7 +161,7 @@ done
 
 ```sleep 0.1``` Slows down the effect for a smoother animation
 #### Here's the result:
-![Now Playing : Money](./assets/Money.png "Money")
+![Now Playing : Money](./assets/soal_3/Money.png "Money")
 
 ### 5. Track : Brain Damage
 >  Mode Details : Displays a list of system processes, functioning like a simplified task manager, updating every second
@@ -188,7 +188,7 @@ Displays a formatted table with PID, USER, Priority, CPU%, MEM%, and Command.
 Updates every second to reflect live system changes.
 Alternates row colors for better readability.
 #### Here's the result:
-![Brain Damage](./assets/Brain-Damage.png "Brain Damage")
+![Brain Damage](./assets/soal_3/Brain-Damage.png "Brain Damage")
 
 ```
         *)
