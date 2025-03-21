@@ -65,12 +65,7 @@ Clears the terminal before running the script to ensure a clean display.
 if [[ "$1" =~ ^--play= ]]; then 
     TRACK="${1#--play=}"
 ```
-``` "$1" ``` refers to the first argument provided when running the script.
-
-``` ^--play= ``` ensures the argument starts with --play=.
-
-``` TRACK="${1#--play=}" ``` extracts the song name from the argument.
-
+Checks if the first argument matches the expected format, then assigns it to the ```TRACK``` variable.
 ``` 
 case "$TRACK" in
 ```
@@ -97,11 +92,8 @@ while [ $PROGRESS -lt 100 ]; do
     [ $PROGRESS -gt 100 ] && PROGRESS=100
 done
 ```
-```sleep $(awk 'BEGIN{srand(); print 0.1 + rand()*0.9}')``` creates a random delay.
-
+Creates a while loop that runs while ```PROGRESS``` is less than 100%, with a random delay between 0.1 and 1 second. Each progress step is updated with a random value, ensuring the progress bar reaches exactly 100% at the end.
 ```printf``` is used to display a progress bar.
-
-```PROGRESS=$((PROGRESS + (RANDOM % 10) + 1))``` increases progress randomly.
 
 ### 3. Track : Time
 >  Mode Details : Real-Time Clock with Cron Job
