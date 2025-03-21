@@ -714,7 +714,7 @@ The -nk is for sorting based on string numerical value on what column i.e., the 
 
 Output: 
 
-![soal_3](assets/soal_4/third.png)
+![soal_3](assets/soal_4/third_updated.png)
 Running Code in background on line 458: 
 ```bash 
 
