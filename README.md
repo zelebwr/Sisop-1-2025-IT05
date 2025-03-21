@@ -63,6 +63,9 @@ You also have to collect their choice, use ↓↓↓
 ```bash
 read -p "Masukkan Menu Pilihanmu : " menu
 ```
+#### Here's the result:
+
+https://github.com/zelebwr/Sisop-1-2025-IT05/blob/taca/assets/soal_1/menu%20interface
 
 Now we're moving to the challenges they'll face!
 1. Poppo is eager to know how many books Chris Hemsworth has read! Let's build a system that fetches and processes the data to reveal the answer.
