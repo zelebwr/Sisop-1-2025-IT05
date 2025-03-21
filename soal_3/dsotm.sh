@@ -2,14 +2,14 @@
 
 clear
 
-if [[ "$1" =~ ^--play= ]]; then #$1 sbg argumen pertama yg diberikan script & cek apakah argumen dimulai dengen --play
+if [[ "$1" =~ ^--play= ]]; then
     TRACK="${1#--play=}"
 
     case "$TRACK" in
         "Speak to Me")
-		echo -e "\e[1;35m====================================\e[0m" #warna ungu
-		echo -e "\e[1;36m         NOW PLAYING:              \e[0m" #warna cyan
-		echo -e "\e[1;32m        🎵 Speak to Me 🎵         \e[0m" #warna hijau
+		echo -e "\e[1;35m====================================\e[0m"
+		echo -e "\e[1;36m         NOW PLAYING:              \e[0m"
+		echo -e "\e[1;32m        🎵 Speak to Me 🎵         \e[0m"
 		echo -e "\e[1;35m====================================\e[0m"
 		echo ""
 
@@ -24,14 +24,14 @@ if [[ "$1" =~ ^--play= ]]; then #$1 sbg argumen pertama yg diberikan script & ce
 	echo -e "\e[1;35m█   \e[1;33m NOW LOADING...\e[1;35m   █\e[0m"
 	echo -e "\e[1;35m█    \e[1;36m🎵 On the Run 🎵\e[1;35m    █\e[0m"
 	echo -e "\e[1;35m███████████████████████████████████\e[0m"
-	echo -ne "\e[1;34m🏃 Starting Run" 
+	echo -ne "\e[1;34m🏃 Starting Run"
 	echo""
-	WIDTH=$(tput cols) #mengambil jml kolom terminal
-	BAR_LENGTH=$((WIDTH - 10)) #menentukan panjang progress bar
-	PROGRESS=0 #variabel awal progress
+	WIDTH=$(tput cols)
+	BAR_LENGTH=$((WIDTH - 10))
+	PROGRESS=0
 
 	while [ $PROGRESS -lt 100 ]; do
-	 sleep $(awk 'BEGIN{srand(); print 0.1 + rand()*0.9}') #menunggu antara 0.1 - 0.9 detik secara acak
+	 sleep $(awk 'BEGIN{srand(); print 0.1 + rand()*0.9}')
 	printf "\r[%-*s] %d%%" "$BAR_LENGTH" "$(head -c $((BAR_LENGTH * PROGRESS / 100)) < /dev/zero | tr '\0' '#')" "$PROGRESS"
 	PROGRESS=$((PROGRESS + (RANDOM % 10) + 1))
 	[ $PROGRESS -gt 100 ] && PROGRESS=100
@@ -46,7 +46,7 @@ if [[ "$1" =~ ^--play= ]]; then #$1 sbg argumen pertama yg diberikan script & ce
             ;;
 
         "Time")
-            SCRIPT_PATH="$(realpath "$0")" #mendapat path lengkap
+            SCRIPT_PATH="$(realpath "$0")"
 
             if crontab -l | grep -q "$SCRIPT_PATH --play=\"Time\""; then
                 echo "Cron job sudah ada."
@@ -68,54 +68,57 @@ if [[ "$1" =~ ^--play= ]]; then #$1 sbg argumen pertama yg diberikan script & ce
 
 	symbols=( "$" "€" "£" "¥" "¢" "₹" "₩" "₿" "₣" )
 
-	cols=$(tput cols) #mengambl jumlah kolom terminal
+	cols=$(tput cols)
 
-	heights=() #array untuk nyimpan tinggi tiap kolom
-	for (( i=0; i<$cols; i++ )); do #loop untuk mengisi array heights dengan angka acak
-	    heights[i]=$(( RANDOM % 5 + 1 )) #menentukan tinggi acak 1-5 tiap kolom
+	heights=()
+	for (( i=0; i<$cols; i++ )); do
+	    heights[i]=$(( RANDOM % 5 + 1 ))
 	done
 
 		while true; do
-	    line="" #var yang menyimpan 1 baris teks yg akan dicetak
+	    line=""
 	    for (( i=0; i<$cols; i++ )); do
-	        if (( RANDOM % heights[i] == 0 )); then #menentukan apakah menampilkan simbol
-	            if (( RANDOM % 2 == 0 )); then #menentukan warna simbol putih/ungu
+	        if (( RANDOM % heights[i] == 0 )); then
+	            if (( RANDOM % 2 == 0 )); then
 	                color="\e[35m"
 	            else
 	                color="\e[37m"
 	            fi
-	            line+="$color${symbols[RANDOM % ${#symbols[@]}]} \e[0m" #memilih simbol acak dari array symbol
+	            line+="$color${symbols[RANDOM % ${#symbols[@]}]} \e[0m"
 	        else
             line+="  "
 	        fi
 	    done
 	    echo -e "$line"
-	    sleep 0.1 #tunggu 0.1 detik sebelum cetak baris berikutnya
+	    sleep 0.1
 	done
 	;;
-	"Brain Damage")
-		while true; do
-	echo -e "\e[1;37m=== Brain Damage ===\e[0m"
-    	echo ""
+	        "Brain Damage")
 
-	ps aux --sort=-%cpu | awk 'NR<=11' | awk '{ #menampilkan proses paling banyak menggunakan CPU & mengambil 10 proses teratas
-        if (NR % 2 == 0) 
-            print "\033[1;37m" $0 "\033[0m";
-        else
-            print "\033[38;5;110m" $0 "\033[0m";
-    }'
+        while true; do
+        clear
 
-    	sleep 1
-    	clear
+         echo -e "\e[1;31m========================== B R A I N  D A M A G E ==========================\e[0m\n"
+         echo -e "\e[1;31mPID         USER            PR      NI        CPU%       MEM%       COMMAND\e[0m"
+         echo -e "\e[1;31m----------------------------------------------------------------------------\e[0m"
 
-	done
-	;;
+        top -b -n 1 -o %CPU | awk 'NR>7 {
+                if (NR % 2 == 0)
+                printf "\033[1;37m%-12s %-15s %-7s %-7s %-10s %-10s %-s\033[0m\n", $1, $2, $3, $4, $9, $10, $12;
+                else
+                    printf "\033[38;5;250m%-12s %-15s %-7s %-7s %-10s %-10s %-s\033[0m\n", $1, $2, $3, $4, $9, $10, $12;
+        }' | head -n 10
+
+        sleep 1
+        done
+
+        ;;
 
         *)
             echo "Error."
             ;;
     esac
 else
-	echo "U
+        echo "U
 se: ./dsotm.sh --play=\"Song Name\""
 fi
