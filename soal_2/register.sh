@@ -64,7 +64,7 @@ while true; do
     if [ -z "$EMAIL" ]; then
         echo -e "\nEmail cannot be empty"
         echo -e "Please enter a valid email.\n"
-    elif ! [[ "$EMAIL" =~ ^[A-Za-z0-9._%+-]+.*\.[a-zA-Z]{2,}$ ]]; then
+    elif ! [[ "$EMAIL" =~ ^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$ ]]; then
         echo -e "\nEmail \"$EMAIL\" is not valid."
         echo -e "Email must contain \'@\' and \'.<domain>\'\n"
         echo -e "Please enter a valid email.\n"
